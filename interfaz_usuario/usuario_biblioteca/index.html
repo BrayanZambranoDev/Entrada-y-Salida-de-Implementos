@@ -11,7 +11,7 @@
         <div class="container">
             <h1 class="logo">Biblioteca</h1>
             <!-- Cambié el texto del botón a solo el signo + -->
-            <button class="cart-button">atras</button>
+            <button class="cart-button" id="back-button">Atrás</button>
         </div>
     </header>
     <main>
@@ -45,29 +45,9 @@
             </section>
         </div>
     </main>
-    <script>
-        // Para cambiar las imágenes cuando se suban nuevos archivos
-        document.querySelectorAll('input[type="file"]').forEach(input => {
-            input.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById(event.target.id.replace('-upload', '-img')).src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
+    
 
-        // Función para agregar al carrito
-        let cartCount = 0;
-        document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', function() {
-                cartCount++;
-                document.querySelector('.cart-button').textContent = `+ (${cartCount})`;
-            });
-        });
-    </script>
+<script src="script.js"></script>
 </body>
+
 </html>
