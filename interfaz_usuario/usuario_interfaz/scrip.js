@@ -12,7 +12,7 @@ document.querySelectorAll(".category").forEach(category => {
 
                 break;
             case "Servicios Generales":
-                window.location.href = "../usuario_servicios/index.html";
+                window.location.href = "../usuario_generales/index.html";
                 break;
             default:
                 console.warn("No se ha definido una redirección para esta categoría.");
