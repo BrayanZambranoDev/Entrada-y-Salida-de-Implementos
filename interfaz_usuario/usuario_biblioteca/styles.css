@@ -138,6 +138,7 @@ main {
 .category-title {
   font-size: 16px;
   font-weight: bold;
+  color: #4b4b4b;
   margin-bottom: 10px;
   text-align: center;
   display: block; /* Asegura que ocupe todo el ancho */
@@ -162,7 +163,7 @@ main {
 
 /* Botón de quitar */
 .remove-from-cart {
-  background-color: red;
+  background-color: rgb(199, 57, 57);
   display: none;
 }
 
