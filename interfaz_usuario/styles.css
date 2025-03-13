@@ -43,20 +43,42 @@ header .container {
   margin-left: 10px;
 }
 
-/* Carrito */
+/* Contenedor de botones alineado a la derecha */
+.header-buttons {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Empuja los botones a la derecha */
+  gap: 8px; /* Espaciado entre botones */
+}
+
+/* Botón de carrito */
 .cart-button {
   background-color: #ffa726;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 15px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin-right: 10px;
+}
+
+/* Botón de cerrar sesión */
+.logout-button {
+  background-color: #d9534f;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 .cart-button:hover {
-  background-color: #ffa726;
+  background-color: #e69500;
+}
+
+.logout-button:hover {
+  background-color: #c9302c;
 }
 
 /* Main Section */
