@@ -1,0 +1,25 @@
+{
+  "name": "entrada-y-salida-de-implementos",
+  "version": "1.0.0",
+  "description": "proyecto de implementos",
+  "main": "formulario.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhasuhndas/Entrada-y-Salida-de-Implementos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nhasuhndas/Entrada-y-Salida-de-Implementos/issues"
+  },
+  "homepage": "https://github.com/nhasuhndas/Entrada-y-Salida-de-Implementos#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mysql": "^2.18.1"
+  }
+}

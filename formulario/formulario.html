@@ -12,7 +12,8 @@
 
   <section class="form-register">
     <h4>Formulario de Registro</h4>
-    <form>
+    
+    <form id="registroForm"> 
       <div class="input-group">
         <input class="controls" type="text" name="nombres" id="nombres" placeholder="Ingrese su Nombre" required>
       </div>
@@ -21,7 +22,7 @@
       </div>
       
       <div class="input-group">
-        <select class="controls" name="tipo_documento" required>
+        <select class="controls" name="tipo_documento" id="tipo_documento" required>
           <option value="" disabled selected>Seleccione tipo de documento</option>
           <option value="1">Cédula de Ciudadanía</option>
           <option value="2">Cédula de Extranjería</option>
@@ -45,7 +46,38 @@
     </form>
   </section>
 
-  <img src="logo-funlam.png" alt="Logo de la institución" class="logo">
+  <script>
+    document.getElementById("registroForm").addEventListener("submit", function(event) {
+        event.preventDefault();
 
+        // Obtener valores
+        const nombres = document.getElementById("nombres").value.trim();
+        const apellidos = document.getElementById("apellidos").value.trim();
+        const tipo_documento = document.getElementById("tipo_documento").value;
+        const documento = document.getElementById("documento").value.trim();
+        const telefono = document.getElementById("telefono").value.trim();
+
+        // Validar que los campos no estén vacíos
+        if (!nombres || !apellidos || !tipo_documento || !documento || !telefono) {
+            alert("⚠️ Todos los campos son obligatorios.");
+            return;
+        }
+
+        // Enviar datos al backend
+        fetch("http://localhost:3000/registro", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nombres, apellidos, tipo_documento, documento, telefono })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.mensaje);
+            document.getElementById("registroForm").reset(); // Limpiar formulario
+        })
+        .catch(error => console.error("Error en la solicitud:", error));
+    });
+  </script>
+  
 </body>
 </html>
+
