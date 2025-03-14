@@ -9,45 +9,60 @@
 <body>
     <header>
         <div class="container">
-            <h1 class="logo">Generales</h1>
-            <!-- Cambié el texto del botón a solo el signo + -->
-            <button class="cart-button" id="back-button">Atrás</button>
+            <h1 class="logo">Biblioteca</h1>
+            <div class="header-buttons">
+                <button class="cart-button" id="back-button">Atrás</button>
+                <button class="cart-icon" id="cart-button">🛒 <span id="cart-count">0</span></button>
+            </div>
         </div>
     </header>
+
     <main>
         <div class="container">
-            <h2 class="category-header">disponibles</h2>
+            <p></p>
+                
+
             <section class="category-container">
                 <div class="category">
-                    <input type="file" id="mercadeo-upload" accept="image/*">
-                    <label for="mercadeo-upload">
-                        <img src="static/images.png" alt="Mercadeo" class="category-img" id="mercadeo-img">
-                    </label>
-                    <span class="category-title">Teclado</span>
+                    <img src="static/images.png" alt="Teclado" class="category-img">
+                    <span class="category-title">SILLAS</span>
                     <button class="add-to-cart">Agregar al carrito</button>
+                    <button class="remove-from-cart">Quitar</button>
                 </div>
                 <div class="category">
-                    <input type="file" id="biblioteca-upload" accept="image/*">
-                    <label for="biblioteca-upload">
-                        <img src="static/Universidad_Catolica_Luis_Amigo_Centro_Regional_Apartado.jpg" alt="Biblioteca" class="category-img" id="biblioteca-img">
-                    </label>
-                    <span class="category-title">Mouse</span>
+                    <img src="static/Universidad_Catolica_Luis_Amigo_Centro_Regional_Apartado.jpg" alt="Mouse" class="category-img">
+                    <span class="category-title">MESAS</span>
                     <button class="add-to-cart">Agregar al carrito</button>
+                    <button class="remove-from-cart">Quitar</button>
                 </div>
                 <div class="category">
-                    <input type="file" id="servicios-upload" accept="image/*">
-                    <label for="servicios-upload">
-                        <img src="static/images.png" alt="Servicios Generales" class="category-img" id="servicios-img">
-                    </label>
-                    <span class="category-title">carro wdsadsad sadsad</span>
+                    <img src="static/images.png" alt="Portátil" class="category-img">
+                        <span class="category-title">MANTELES</span>
                     <button class="add-to-cart">Agregar al carrito</button>
+                    <button class="remove-from-cart">Quitar</button>
+                </div>
+                <div class="category">
+                    <img src="static/images.png" alt="Teclado" class="category-img">
+                    <span class="category-title">CENTROS DE MESA</span>
+                    <button class="add-to-cart">Agregar al carrito</button>
+                    <button class="remove-from-cart">Quitar</button>
+                </div>
+                <div class="category">
+                    <img src="static/Universidad_Catolica_Luis_Amigo_Centro_Regional_Apartado.jpg" alt="Mouse" class="category-img">
+                    <span class="category-title">AGREGAR PRODUCTO</span>
+                    <button class="add-to-cart">Agregar al carrito</button>
+                    <button class="remove-from-cart">Quitar</button>
+                </div>
+                <div class="category">
+                    <img src="static/images.png" alt="Portátil" class="category-img">
+                    <span class="category-title">AGREGAR IMPLEMENTO</span>
+                    <button class="add-to-cart">Agregar al carrito</button>
+                    <button class="remove-from-cart">Quitar</button>
                 </div>
             </section>
         </div>
     </main>
-    
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
-
 </html>

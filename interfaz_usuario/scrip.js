@@ -5,17 +5,23 @@ document.querySelectorAll(".category").forEach(category => {
 
         switch (categoryName) {
             case "Mercadeo":
-                window.location.href = "../usuario_mercadeo/index.html";
+                window.location.href = "usuario_mercadeo/index.html";
                 break;
             case "Biblioteca":
-                window.location.href = "../usuario_biblioteca/index.html";
+                window.location.href = "usuario_biblioteca/index.html";
 
                 break;
             case "Servicios Generales":
-                window.location.href = "../usuario_generales/index.html";
+                window.location.href = "usuario_generales/index.html";
                 break;
             default:
                 console.warn("No se ha definido una redirección para esta categoría.");
         }
     });
 });
+
+
+function cerrarSesion() {
+    // Redirigir a la página de inicio de sesión
+    window.location.href = "../index.html";
+}
