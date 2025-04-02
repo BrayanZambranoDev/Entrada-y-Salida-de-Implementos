@@ -178,7 +178,7 @@ main {
 
 
 /* Nuevo recuadro de solicitudes pendientes */
-.pending-requests {
+.approved-requests {
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -190,7 +190,7 @@ main {
   overflow-y: auto; /* Permite desplazamiento si hay muchas solicitudes */
 }
 
-.pending-requests h2 {
+.approved-requests h2 {
   font-size: 18px;
   font-weight: bold;
   color: #000;
@@ -217,34 +217,34 @@ main {
   color: #007b99;
 }
 
-/* Estilo para el enlace de "Acceder" */
+/* Estilo para los botones de Aprobar */
 .request-actions {
   display: flex;
   gap: 10px;
 }
 
-.access-button {
+.approve-button {
   padding: 8px 15px;
   font-size: 14px;
-  text-decoration: none;
-  background-color: #007b99;
-  color: white;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  background-color: #28a745; /* Verde para aprobar */
+  color: white;
 }
 
-.access-button:hover {
-  background-color: #005f73; /* Color más oscuro al pasar el cursor */
+.approve-button:hover {
+  background-color: #218838; /* Verde oscuro al pasar el cursor */
 }
 
-/* Submenú en el sidebar para las solicitudes aprobadas y por fuera */
-.submenu-content.aprobadas, .submenu-content.porfuera {
+/* Submenú en el sidebar para las solicitudes aprobadas */
+.submenu-content.aprobadas {
   display: none;
   padding-left: 20px;
 }
 
-.submenu-content.aprobadas a, .submenu-content.porfuera a {
+.submenu-content.aprobadas a {
   font-size: 16px;
   padding: 8px;
   background-color: #f1f1f1;
@@ -253,12 +253,12 @@ main {
   transition: background-color 0.3s ease;
 }
 
-.submenu-content.aprobadas a:hover, .submenu-content.porfuera a:hover {
+.submenu-content.aprobadas a:hover {
   background-color: #007b99;
   color: white;
 }
 
-/* Mostrar las solicitudes aprobadas y por fuera en el sidebar */
-.show-aprobadas, .show-porfuera {
+/* Mostrar las solicitudes aprobadas en el sidebar */
+.show-aprobadas {
   display: block !important;
 }
