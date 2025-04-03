@@ -53,8 +53,3 @@ function aprobarSolicitud(producto, usuario) {
         event.preventDefault(); // Evita que la página se recargue
         alert("Entrega confirmada.");
     });
-
-    function redirigirAHome() {
-        window.location.href = '../index.html';  // Redirige a la página principal (ajusta la ruta si es necesario)
-    }
-           
