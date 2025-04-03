@@ -27,24 +27,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-
-// Función para aprobar solicitud
-function aprobarSolicitud(producto, usuario) {
-    // Crear un nuevo elemento para el submenú de solicitudes aprobadas
-    const aprobadasList = document.querySelector('.submenu-content.aprobadas');
-    const nuevaSolicitud = document.createElement('a');
-    nuevaSolicitud.href = '#';
-    nuevaSolicitud.textContent = `${usuario} ha solicitado ${producto}`;
-
-    // Añadirlo al submenú de solicitudes aprobadas
-    aprobadasList.appendChild(nuevaSolicitud);
-
-    // Mostrar el submenú de aprobadas si no está visible
-    if (!aprobadasList.classList.contains('show-aprobadas')) {
-        aprobadasList.classList.add('show-aprobadas');
-    }
-
-    // Opcional: Eliminar la solicitud aprobada del recuadro de solicitudes pendientes
-    const solicitud = event.target.closest('.request-item');
-    solicitud.remove();
-}

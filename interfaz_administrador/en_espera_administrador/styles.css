@@ -262,3 +262,44 @@ main {
 .show-aprobadas {
   display: block !important;
 }
+
+.category-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
+
+h2 {
+  font-size: 22px;
+  color: #555;
+}
+
+form {
+  margin-top: 15px;
+}
+
+label {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.2); /* Hace el checkbox más grande */
+}
+
+button {
+  margin-top: 15px;
+  background-color: #d97a40;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #ffa726;
+}

@@ -27,7 +27,7 @@
     <div class="main-container">
         <!-- Barra lateral -->
         <div class="sidebar" id="sidebar">
-            <h3 class=>Menú</h3>
+            <h3 class="menu-title">Menú</h3>
             
             <!-- Implementos con Submenú -->
             <div class="submenu">
@@ -42,10 +42,12 @@
              <div class="submenu">
                 <a href="#" onclick="toggleSubmenu()">Solicitudes ▼</a>
                 <div class="submenu-content" id="submenu">
-                    <a href="#">entregadas</a>
+                    <a href="../entregadas_administrador/index.html">Entregadas</a>
                 </div>
-
             </div>
+
+            <!-- Enlace al Home, fuera del submenú -->
+            <a href="../index.html" class="home-link">Ir a la pagina principal</a> <!-- Enlace destacado para ir al Home -->
 
         </div>
 
@@ -55,20 +57,26 @@
                 <section class="category-container">
                     <div class="category">
                         <h1 class="category-title">Juan Pérez ha solicitado</h1>
-                        <form id="entrega-form">
+                        <form class="entrega-form">
                             <label><input type="checkbox" name="item" value="Mouse"> Mouse</label><br>
                             <label><input type="checkbox" name="item" value="Portátil"> Portátil</label><br>
                             <label><input type="checkbox" name="item" value="Teclado"> Teclado</label><br>
                             <button type="submit">Confirmar Entrega</button>
                         </form>
                     </div>
+        
+                    <div class="category">
+                        <h1 class="category-title">Maria López ha solicitado</h1>
+                        <form class="entrega-form">
+                            <label><input type="checkbox" name="item" value="Teclado"> Teclado</label><br>
+                            <label><input type="checkbox" name="item" value="Funda Portátil"> Funda Portátil</label><br>
+                            <label><input type="checkbox" name="item" value="Proyector"> Proyector</label><br>
+                            <button type="submit">Confirmar Entrega</button>
+                        </form>
+                    </div>
                 </section>
             </div>
         </main>
-        
-        
-
-       
     </div>
 
     <script src="scrip.js"></script>

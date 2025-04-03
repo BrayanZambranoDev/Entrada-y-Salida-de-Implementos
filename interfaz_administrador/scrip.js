@@ -31,12 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
 // Función para acceder a la solicitud y redirigir a la página de gestión
 function accederSolicitud(producto, usuario) {
     // Aquí puedes redirigir a otra sección para gestionar la solicitud
-    alert("Accediendo a la solicitud de " + usuario + " para el producto " + producto);
+    alert("Accediendo a la solicitud de " + usuario );
 
     // Aquí puedes agregar la lógica para redirigir a la página correspondiente
     // Por ejemplo: window.location.href = 'pagina_de_gestion.html'; 
     // Si usas una página externa para la gestión de solicitudes
-    window.location.href = 'aprobadas_aministrador/index.html?producto=' + producto + '&usuario=' + usuario;
+    window.location.href = 'en_espera_administrador/index.html?producto=' + producto + '&usuario=' + usuario;
 
 
 }
