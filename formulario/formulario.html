@@ -12,8 +12,7 @@
 
   <section class="form-register">
     <h4>Formulario de Registro</h4>
-    
-    <p id="mensaje" style="color: green; font-weight: bold;"></p> <!-- Mensaje de confirmación -->
+    <p id="mensaje" style="color: green; font-weight: bold;"></p>
     
     <form id="registroForm"> 
       <div class="input-group">
@@ -22,21 +21,17 @@
       <div class="input-group">
         <input class="controls" type="text" name="apellidos" id="apellidos" placeholder="Ingrese su Apellido" required>
       </div>
-      
       <div class="input-group">
         <select class="controls" name="tipo_documento" id="tipo_documento" required>
           <option value="" disabled selected>Seleccione tipo de documento</option>
-          <option value="1">Cédula de Ciudadanía</option>
-          <option value="2">Cédula de Extranjería</option>
-          <option value="3">Tarjeta de Identidad</option>
-      </select>
-      
+          <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
+          <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+          <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
+        </select>
       </div>
-
       <div class="input-group">
         <input class="controls" type="text" name="documento" id="documento" placeholder="Número de Documento" required>
       </div>
-      
       <div class="input-group">
         <input class="controls" type="tel" name="telefono" id="telefono" placeholder="Ingrese su Teléfono" required>
       </div>
@@ -50,16 +45,25 @@
   </section>
 
   <script>
+    const correo = localStorage.getItem("correo")?.trim() || "";
+
     document.getElementById("registroForm").addEventListener("submit", function(event) {
       event.preventDefault();
 
       const datos = {
-        nombres: document.getElementById("nombres").value,
-        apellidos: document.getElementById("apellidos").value,
+        nombres: document.getElementById("nombres").value.trim(),
+        apellidos: document.getElementById("apellidos").value.trim(),
         tipo_documento: document.getElementById("tipo_documento").value,
-        documento: document.getElementById("documento").value,
-        telefono: document.getElementById("telefono").value
+        documento: document.getElementById("documento").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
+        correo: correo
       };
+
+      // Validación de campos
+      if (!datos.nombres || !datos.apellidos || !datos.tipo_documento || !datos.documento || !datos.telefono || !datos.correo) {
+        document.getElementById("mensaje").textContent = "❌ Todos los campos son obligatorios.";
+        return;
+      }
 
       fetch("http://localhost:3000/registro", {
         method: "POST",
@@ -71,6 +75,9 @@
         if (data.mensaje) {
           document.getElementById("mensaje").textContent = "✅ " + data.mensaje;
           document.getElementById("registroForm").reset();
+          setTimeout(() => {
+            window.location.href = "http://127.0.0.1:5500/interfaz_usuario/index.html";
+          }, 2000);
         } else {
           document.getElementById("mensaje").textContent = "❌ Error en la respuesta del servidor.";
         }

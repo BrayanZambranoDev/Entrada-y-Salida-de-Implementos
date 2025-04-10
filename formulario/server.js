@@ -6,7 +6,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Configuración de la base de datos con mejor manejo de conexiones
 const conexion = mysql.createPool({
     connectionLimit: 10,
     host: "localhost",
@@ -15,7 +14,6 @@ const conexion = mysql.createPool({
     database: "registro_usuarios"
 });
 
-// Verificar conexión
 conexion.getConnection((error, connection) => {
     if (error) {
         console.error("❌ Error de conexión a la base de datos:", error);
@@ -25,16 +23,39 @@ conexion.getConnection((error, connection) => {
     connection.release();
 });
 
-// Ruta para registrar datos
-app.post("/registro", (req, res) => {
-    const { nombres, apellidos, tipo_documento, documento, telefono } = req.body;
+// Nueva ruta: Verificar si el correo ya está registrado
+app.post("/verificar-correo", (req, res) => {
+    const { correo } = req.body;
 
-    if (!nombres || !apellidos || !tipo_documento || !documento || !telefono) {
+    if (!correo) {
+        return res.status(400).json({ registrado: false, mensaje: "❌ Correo no proporcionado." });
+    }
+
+    const sql = "SELECT * FROM usuarios WHERE correo = ?";
+    conexion.query(sql, [correo], (error, resultados) => {
+        if (error) {
+            console.error("❌ Error al verificar correo:", error);
+            return res.status(500).json({ registrado: false, mensaje: "❌ Error al consultar la base de datos." });
+        }
+
+        if (resultados.length > 0) {
+            res.json({ registrado: true });
+        } else {
+            res.json({ registrado: false });
+        }
+    });
+});
+
+// Ruta para registrar datos (incluye correo)
+app.post("/registro", (req, res) => {
+    const { nombres, apellidos, tipo_documento, documento, telefono, correo } = req.body;
+
+    if (!nombres || !apellidos || !tipo_documento || !documento || !telefono || !correo) {
         return res.status(400).json({ mensaje: "❌ Todos los campos son obligatorios." });
     }
 
-    const sql = "INSERT INTO usuarios (nombres, apellidos, tipo_documento, documento, telefono) VALUES (?, ?, ?, ?, ?)";
-    conexion.query(sql, [nombres, apellidos, tipo_documento, documento, telefono], (error, resultado) => {
+    const sql = "INSERT INTO usuarios (nombres, apellidos, tipo_documento, documento, telefono, correo) VALUES (?, ?, ?, ?, ?, ?)";
+    conexion.query(sql, [nombres, apellidos, tipo_documento, documento, telefono, correo], (error, resultado) => {
         if (error) {
             console.error("❌ Error al insertar datos:", error);
             res.status(500).json({ mensaje: "❌ Error al registrar en la base de datos." });
@@ -44,7 +65,8 @@ app.post("/registro", (req, res) => {
     });
 });
 
-// Ruta para obtener registros en formato tabla HTML
+
+// Ruta para mostrar registros en tabla
 app.get("/registros", (req, res) => {
     const sql = "SELECT * FROM usuarios ORDER BY id DESC";
     conexion.query(sql, (error, results) => {
@@ -82,6 +104,7 @@ app.get("/registros", (req, res) => {
                         <th>Tipo de Documento</th>
                         <th>Número de Documento</th>
                         <th>Teléfono</th>
+                        <th>Correo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,6 +119,7 @@ app.get("/registros", (req, res) => {
                     <td>${registro.tipo_documento}</td>
                     <td>${registro.documento}</td>
                     <td>${registro.telefono}</td>
+                    <td>${registro.correo}</td>
                 </tr>
             `;
         });
@@ -107,12 +131,29 @@ app.get("/registros", (req, res) => {
         </html>
         `;
 
-        res.send(html); // Enviar la tabla como respuesta
+        res.send(html);
     });
 });
 
-// Iniciar servidor
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+});
+// Verificar si el correo ya existe
+app.get("/verificar", (req, res) => {
+    const correo = req.query.correo;
+
+    const sql = "SELECT * FROM usuarios WHERE correo = ?";
+    conexion.query(sql, [correo], (error, resultados) => {
+        if (error) {
+            console.error("❌ Error al verificar correo:", error);
+            return res.status(500).json({ error: true });
+        }
+
+        if (resultados.length > 0) {
+            res.json({ registrado: true });
+        } else {
+            res.json({ registrado: false });
+        }
+    });
 });
