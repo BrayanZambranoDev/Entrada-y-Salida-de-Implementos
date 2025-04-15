@@ -1,73 +1,55 @@
-
-        // Para cambiar las imágenes cuando se suban nuevos archivos
-        document.querySelectorAll('input[type="file"]').forEach(input => {
-            input.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById(event.target.id.replace('-upload', '-img')).src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
-
-    // Función para regresar a la página anterior
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelector('.cart-button').addEventListener('click', function() {
-        window.history.back(); // Regresa a la página anterior
-    });
-});
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const cartCount = document.getElementById("cart-count");
-    const addToCartButtons = document.querySelectorAll(".add-to-cart");
-    const removeFromCartButtons = document.querySelectorAll(".remove-from-cart");
-
-    let cart = {}; // Almacena la cantidad de cada producto
-
-    addToCartButtons.forEach((button, index) => {
-        button.addEventListener("click", () => {
-            const category = button.parentElement;
-            const productName = category.querySelector(".category-title").innerText;
-
-            // Aumenta la cantidad del producto en el carrito
-            cart[productName] = (cart[productName] || 0) + 1;
-            updateCartCount();
-            updateRemoveButton(category, productName);
-        });
-    });
-
-    removeFromCartButtons.forEach((button, index) => {
-        button.addEventListener("click", () => {
-            const category = button.parentElement;
-            const productName = category.querySelector(".category-title").innerText;
-
-            if (cart[productName] > 0) {
-                cart[productName] -= 1;
-                updateCartCount();
-                updateRemoveButton(category, productName);
-            }
-        });
-    });
-
-    function updateCartCount() {
-        let totalItems = Object.values(cart).reduce((acc, val) => acc + val, 0);
-        cartCount.innerText = totalItems;
-    }
-
-    function updateRemoveButton(category, productName) {
-        const removeButton = category.querySelector(".remove-from-cart");
-
-        if (cart[productName] > 0) {
-            removeButton.style.display = "block";
-            removeButton.innerText = `Quitar (${cart[productName]})`; // Muestra la cantidad
-        } else {
-            removeButton.style.display = "none";
+document.addEventListener('DOMContentLoaded', () => {
+    const categories = document.querySelectorAll('.category');
+    const cartCounter = document.querySelector('.cart-icon span');
+    let totalItems = 0;
+  
+    categories.forEach(category => {
+      const addBtn = category.querySelector('.add-to-cart');
+      const removeBtn = category.querySelector('.remove-from-cart');
+      const quantityInput = category.querySelector('input[type="number"]');
+      const commentInput = category.querySelector('textarea');
+  
+      // Agregar al carrito
+      addBtn.addEventListener('click', () => {
+        const quantity = parseInt(quantityInput.value);
+  
+        // Validar que la cantidad sea mayor que 0 y no NaN
+        if (isNaN(quantity) || quantity <= 0) {
+          alert('Por favor, ingrese una cantidad válida.');
+          return;
         }
-    }
-});
-
+  
+        // Guardar la cantidad en el botón de quitar
+        removeBtn.dataset.quantity = quantity;
+  
+        // Actualizar el total
+        totalItems += quantity;
+        cartCounter.textContent = totalItems;
+  
+        // Mostrar botón de quitar y desactivar agregar
+        removeBtn.style.display = 'block';
+        addBtn.disabled = true;
+      });
+  
+      // Quitar del carrito
+      removeBtn.addEventListener('click', () => {
+        const quantity = parseInt(removeBtn.dataset.quantity);
+  
+        // Asegurar que la cantidad guardada sea válida
+        if (!isNaN(quantity)) {
+          totalItems -= quantity;
+          if (totalItems < 0) totalItems = 0; // Seguridad
+          cartCounter.textContent = totalItems;
+        }
+  
+        // Ocultar botón de quitar y reactivar agregar
+        removeBtn.style.display = 'none';
+        addBtn.disabled = false;
+  
+        // Limpiar inputs
+        quantityInput.value = '';
+        commentInput.value = '';
+      });
+    });
+  });
+  

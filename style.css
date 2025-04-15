@@ -13,6 +13,9 @@
 /* Controles del carrusel con animación 3D */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
+
+
+    
     filter: invert(80%);
     transition: var(--transition-default);
     transform-style: preserve-3d;

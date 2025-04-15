@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventario de Implementos</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f6f8;
+    }
+    header {
+      background-color: #6c5ce7;
+      color: white;
+      text-align: center;
+      padding: 30px 0;
+    }
+    main {
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    section {
+      width: 100%;
+      max-width: 960px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #eee;
+    }
+    input[type="number"], input[type="text"] {
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 80px;
+    }
+    .form-row input[type="text"] {
+      width: 140px;
+    }
+    button {
+      padding: 6px 14px;
+      background-color: #00b894;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #019874;
+    }
+    .form-row {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+    .btn-delete {
+      background-color: #d63031;
+    }
+    .btn-delete:hover {
+      background-color: #b71c1c;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Inventario de Implementos</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Lista de Implementos</h2>
+      <table id="implementos-tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Cantidad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="implementos-lista"></tbody>
+      </table>
+
+      <div class="form-row">
+        <input type="text" id="nuevo-nombre" placeholder="Nombre" />
+        <input type="text" id="nueva-categoria" placeholder="Categoría" />
+        <input type="number" id="nueva-cantidad" placeholder="Cantidad" min="0" />
+        <button onclick="agregarImplemento()">Agregar Implemento</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    async function cargarImplementos() {
+      const res = await fetch('http://localhost:3000/implementos');
+      const implementos = await res.json();
+      const tabla = document.getElementById("implementos-lista");
+      tabla.innerHTML = "";
+
+      implementos.forEach((imp) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${imp.id}</td>
+          <td>${imp.nombre}</td>
+          <td>${imp.categoria}</td>
+          <td><input type="number" value="${imp.cantidad}" min="0" id="cantidad-${imp.id}" /></td>
+          <td>
+            <button onclick="guardarCantidad(${imp.id})">Guardar</button>
+            <button class="btn-delete" onclick="eliminarImplemento(${imp.id})">Eliminar</button>
+          </td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    async function agregarImplemento() {
+      const nombre = document.getElementById("nuevo-nombre").value;
+      const categoria = document.getElementById("nueva-categoria").value;
+      const cantidad = document.getElementById("nueva-cantidad").value;
+
+      if (!nombre || !categoria || cantidad === "") {
+        return alert("Completa todos los campos");
+      }
+
+      await fetch("http://localhost:3000/implementos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, categoria, cantidad })
+      });
+
+      document.getElementById("nuevo-nombre").value = "";
+      document.getElementById("nueva-categoria").value = "";
+      document.getElementById("nueva-cantidad").value = "";
+      cargarImplementos();
+    }
+
+    async function guardarCantidad(id) {
+      const cantidad = document.getElementById(`cantidad-${id}`).value;
+      await fetch(`http://localhost:3000/implementos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cantidad })
+      });
+      cargarImplementos();
+    }
+
+    async function eliminarImplemento(id) {
+      await fetch(`http://localhost:3000/implementos/${id}`, {
+        method: "DELETE"
+      });
+      cargarImplementos();
+    }
+
+    cargarImplementos();
+  </script>
+</body>
+</html>

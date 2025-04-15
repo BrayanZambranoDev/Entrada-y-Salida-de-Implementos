@@ -12,6 +12,7 @@
 
   <section class="form-register">
     <h4>Formulario de Registro</h4>
+    <p id="mensaje" style="color: green; font-weight: bold;"></p>
     
     <form id="registroForm"> 
       <div class="input-group">
@@ -20,20 +21,17 @@
       <div class="input-group">
         <input class="controls" type="text" name="apellidos" id="apellidos" placeholder="Ingrese su Apellido" required>
       </div>
-      
       <div class="input-group">
         <select class="controls" name="tipo_documento" id="tipo_documento" required>
           <option value="" disabled selected>Seleccione tipo de documento</option>
-          <option value="1">Cédula de Ciudadanía</option>
-          <option value="2">Cédula de Extranjería</option>
-          <option value="3">Tarjeta de Identidad</option>
+          <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
+          <option value="Cédula de Extranjería">Cédula de Extranjería</option>
+          <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
         </select>
       </div>
-
       <div class="input-group">
         <input class="controls" type="text" name="documento" id="documento" placeholder="Número de Documento" required>
       </div>
-      
       <div class="input-group">
         <input class="controls" type="tel" name="telefono" id="telefono" placeholder="Ingrese su Teléfono" required>
       </div>
@@ -47,37 +45,49 @@
   </section>
 
   <script>
+    const correo = localStorage.getItem("correo")?.trim() || "";
+
     document.getElementById("registroForm").addEventListener("submit", function(event) {
-        event.preventDefault();
+      event.preventDefault();
 
-        // Obtener valores
-        const nombres = document.getElementById("nombres").value.trim();
-        const apellidos = document.getElementById("apellidos").value.trim();
-        const tipo_documento = document.getElementById("tipo_documento").value;
-        const documento = document.getElementById("documento").value.trim();
-        const telefono = document.getElementById("telefono").value.trim();
+      const datos = {
+        nombres: document.getElementById("nombres").value.trim(),
+        apellidos: document.getElementById("apellidos").value.trim(),
+        tipo_documento: document.getElementById("tipo_documento").value,
+        documento: document.getElementById("documento").value.trim(),
+        telefono: document.getElementById("telefono").value.trim(),
+        correo: correo
+      };
 
-        // Validar que los campos no estén vacíos
-        if (!nombres || !apellidos || !tipo_documento || !documento || !telefono) {
-            alert("⚠️ Todos los campos son obligatorios.");
-            return;
+      // Validación de campos
+      if (!datos.nombres || !datos.apellidos || !datos.tipo_documento || !datos.documento || !datos.telefono || !datos.correo) {
+        document.getElementById("mensaje").textContent = "❌ Todos los campos son obligatorios.";
+        return;
+      }
+
+      fetch("http://localhost:3000/registro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.mensaje) {
+          document.getElementById("mensaje").textContent = "✅ " + data.mensaje;
+          document.getElementById("registroForm").reset();
+          setTimeout(() => {
+            window.location.href = "http://127.0.0.1:5500/interfaz_usuario/index.html";
+          }, 2000);
+        } else {
+          document.getElementById("mensaje").textContent = "❌ Error en la respuesta del servidor.";
         }
-
-        // Enviar datos al backend
-        fetch("http://localhost:3000/registro", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nombres, apellidos, tipo_documento, documento, telefono })
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert(data.mensaje);
-            document.getElementById("registroForm").reset(); // Limpiar formulario
-        })
-        .catch(error => console.error("Error en la solicitud:", error));
+      })
+      .catch(error => {
+        console.error("❌ Error al registrar:", error);
+        document.getElementById("mensaje").textContent = "❌ Error al registrar los datos.";
+      });
     });
   </script>
-  
+
 </body>
 </html>
-
