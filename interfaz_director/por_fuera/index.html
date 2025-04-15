@@ -29,11 +29,20 @@
         <div class="sidebar" id="sidebar">
             <h3 class="menu-title">Menú</h3>
 
-            <!-- Enlace al Home, fuera del submenú -->
-            <a href="../index.html" class="home-link">Ir a la pagina principal</a> <!-- Enlace destacado para ir al Home -->
+            <!-- solicitudes con Submenú -->
+            <div class="submenu">
+                <a href="#" onclick="toggleSubmenu()">Solicitudes ▼</a>
+                <div class="submenu-content" id="submenu">
+                    <a href="../aprobadas/index.html">aprobadas</a>
+                    <a href="../en_espera/index.html">en espera</a>
+                </div>
+            </div>
 
+            <!-- Enlace al Home -->
+            <a href="../index.html" class="home-link">Ir a la página principal</a>
         </div>
 
+        <!-- Contenido principal -->
         <main>
             <div class="container">
                 <section class="category-container">
@@ -50,31 +59,25 @@
                             <h3>Tiempo fuera:</h3> <p>00:30:00</p>
                         </div>
                     </div>
-            </div>
-        </main>
 
-        <main>
-            <div class="container">
-                <section class="category-container">
                     <div class="category">
-                        <h1 class="category-title">maria lopez ha sido aprobado</h1>
+                        <h1 class="category-title">María López ha sido aprobado</h1>
                         <h3>Implementos entregados:</h3>
                         <ul>
-                            <li>bandera</li>
+                            <li>Bandera</li>
                             <li>Portátil</li>
-                            <li>mouse</li>
+                            <li>Mouse</li>
                         </ul>
                         <div class="status-time">
                             <h3>Estado:</h3> <p>Entregado</p>
                             <h3>Tiempo fuera:</h3> <p>00:50:00</p>
                         </div>
                     </div>
+                </section>
             </div>
         </main>
-
     </div>
 
     <script src="scrip.js"></script>
-
 </body>
 </html>
