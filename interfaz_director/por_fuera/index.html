@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préstamo de Implementos</title>
+    
+    <!-- Conexión a Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet">
+
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+            <h1 class="logo">Préstamo de Implementos</h1>
+            <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <!-- Contenedor principal -->
+    <div class="main-container">
+        <!-- Barra lateral -->
+        <div class="sidebar" id="sidebar">
+            <h3 class="menu-title">Menú</h3>
+
+            <!-- Enlace al Home, fuera del submenú -->
+            <a href="../index.html" class="home-link">Ir a la pagina principal</a> <!-- Enlace destacado para ir al Home -->
+
+        </div>
+
+        <main>
+            <div class="container">
+                <section class="category-container">
+                    <div class="category">
+                        <h1 class="category-title">Juan Pérez ha sido aprobado</h1>
+                        <h3>Implementos entregados:</h3>
+                        <ul>
+                            <li>Mouse</li>
+                            <li>Portátil</li>
+                            <li>Teclado</li>
+                        </ul>
+                        <div class="status-time">
+                            <h3>Estado:</h3> <p>Entregado</p>
+                            <h3>Tiempo fuera:</h3> <p>00:30:00</p>
+                        </div>
+                    </div>
+            </div>
+        </main>
+
+        <main>
+            <div class="container">
+                <section class="category-container">
+                    <div class="category">
+                        <h1 class="category-title">maria lopez ha sido aprobado</h1>
+                        <h3>Implementos entregados:</h3>
+                        <ul>
+                            <li>bandera</li>
+                            <li>Portátil</li>
+                            <li>mouse</li>
+                        </ul>
+                        <div class="status-time">
+                            <h3>Estado:</h3> <p>Entregado</p>
+                            <h3>Tiempo fuera:</h3> <p>00:50:00</p>
+                        </div>
+                    </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="scrip.js"></script>
+
+</body>
+</html>
