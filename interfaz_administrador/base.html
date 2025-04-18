@@ -46,14 +46,36 @@
     th {
       background-color: #eee;
     }
-    input[type="number"], input[type="text"] {
+    input[type="number"], input[type="text"], input[type="file"] {
       padding: 6px;
       border: 1px solid #ccc;
       border-radius: 4px;
+    }
+    input[type="number"] {
       width: 80px;
     }
-    .form-row input[type="text"] {
+    input[type="text"] {
       width: 140px;
+    }
+    .form-row input[type="file"] {
+      width: 200px;
+    }
+    select {
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      min-width: 160px;
+      width: auto;
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      background-color: white;
+      color: #333;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    select:focus {
+      border-color: #6c5ce7;
+      box-shadow: 0 0 5px rgba(108, 92, 231, 0.5);
+      outline: none;
     }
     button {
       padding: 6px 14px;
@@ -71,12 +93,52 @@
       display: flex;
       justify-content: space-around;
       margin-top: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
     .btn-delete {
       background-color: #d63031;
     }
     .btn-delete:hover {
       background-color: #b71c1c;
+    }
+    .success-message {
+      color: #00b894;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .img-preview {
+      max-width: 80px;
+      max-height: 80px;
+      margin: 5px;
+      border-radius: 4px;
+    }
+    .file-input-container {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+    .file-input-button {
+      padding: 6px 14px;
+      background-color: #6c5ce7;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: inline-block;
+    }
+    .file-input-button:hover {
+      background-color: #5851db;
+    }
+    .file-input-container input[type="file"] {
+      font-size: 100px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -87,10 +149,12 @@
   <main>
     <section>
       <h2>Lista de Implementos</h2>
+      <div id="message" class="success-message"></div>
       <table id="implementos-tabla">
         <thead>
           <tr>
             <th>ID</th>
+            <th>Imagen</th>
             <th>Nombre</th>
             <th>Categoría</th>
             <th>Cantidad</th>
@@ -102,75 +166,194 @@
 
       <div class="form-row">
         <input type="text" id="nuevo-nombre" placeholder="Nombre" />
-        <input type="text" id="nueva-categoria" placeholder="Categoría" />
+        <select id="nueva-categoria">
+          <option value="">Selecciona una categoría</option>
+          <option value="Biblioteca">Biblioteca</option>
+          <option value="Mercadeo">Mercadeo</option>
+          <option value="Servicios Generales">Servicios Generales</option>
+        </select>
         <input type="number" id="nueva-cantidad" placeholder="Cantidad" min="0" />
+        <div class="file-input-container">
+          <span class="file-input-button">Seleccionar imagen</span>
+          <input type="file" id="nueva-imagen" accept="image/*" />
+        </div>
         <button onclick="agregarImplemento()">Agregar Implemento</button>
       </div>
     </section>
   </main>
 
   <script>
+    // Cargar implementos
     async function cargarImplementos() {
-      const res = await fetch('http://localhost:3000/implementos');
-      const implementos = await res.json();
-      const tabla = document.getElementById("implementos-lista");
-      tabla.innerHTML = "";
+      try {
+        const res = await fetch('http://localhost:3000/implementos');
+        if (!res.ok) {
+          throw new Error('Error al cargar los implementos');
+        }
+        const implementos = await res.json();
+        const tabla = document.getElementById("implementos-lista");
+        tabla.innerHTML = "";
 
-      implementos.forEach((imp) => {
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-          <td>${imp.id}</td>
-          <td>${imp.nombre}</td>
-          <td>${imp.categoria}</td>
-          <td><input type="number" value="${imp.cantidad}" min="0" id="cantidad-${imp.id}" /></td>
-          <td>
-            <button onclick="guardarCantidad(${imp.id})">Guardar</button>
-            <button class="btn-delete" onclick="eliminarImplemento(${imp.id})">Eliminar</button>
-          </td>
-        `;
-        tabla.appendChild(fila);
-      });
+        implementos.forEach((imp) => {
+          const fila = document.createElement("tr");
+          fila.innerHTML = `
+            <td>${imp.id}</td>
+            <td>
+              <img src="${imp.imagen_url || '/placeholder-image.png'}" alt="${imp.nombre}" class="img-preview" />
+              <div class="file-input-container">
+                <span class="file-input-button">Cambiar</span>
+                <input type="file" id="imagen-${imp.id}" accept="image/*" />
+              </div>
+            </td>
+            <td><input type="text" value="${imp.nombre}" id="nombre-${imp.id}" /></td>
+            <td>
+              <select id="categoria-${imp.id}">
+                <option value="Biblioteca" ${imp.categoria === 'Biblioteca' ? 'selected' : ''}>Biblioteca</option>
+                <option value="Mercadeo" ${imp.categoria === 'Mercadeo' ? 'selected' : ''}>Mercadeo</option>
+                <option value="Servicios Generales" ${imp.categoria === 'Servicios Generales' ? 'selected' : ''}>Servicios Generales</option>
+              </select>
+            </td>
+            <td><input type="number" value="${imp.cantidad}" min="0" id="cantidad-${imp.id}" /></td>
+            <td>
+              <button onclick="guardarImplemento(${imp.id})">Guardar</button>
+              <button class="btn-delete" onclick="eliminarImplemento(${imp.id})">Eliminar</button>
+            </td>
+          `;
+          tabla.appendChild(fila);
+        });
+      } catch (error) {
+        console.error(error);
+        mostrarMensaje("Hubo un error al cargar los implementos", false);
+      }
     }
 
+    // Agregar un nuevo implemento
     async function agregarImplemento() {
-      const nombre = document.getElementById("nuevo-nombre").value;
+      const nombre = document.getElementById("nuevo-nombre").value.trim();
       const categoria = document.getElementById("nueva-categoria").value;
       const cantidad = document.getElementById("nueva-cantidad").value;
-
+      const imagenInput = document.getElementById("nueva-imagen");
+      
       if (!nombre || !categoria || cantidad === "") {
-        return alert("Completa todos los campos");
+        return mostrarMensaje("Completa todos los campos obligatorios", false);
       }
 
-      await fetch("http://localhost:3000/implementos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, categoria, cantidad })
-      });
+      if (isNaN(cantidad) || cantidad <= 0) {
+        return mostrarMensaje("La cantidad debe ser un número positivo.", false);
+      }
 
-      document.getElementById("nuevo-nombre").value = "";
-      document.getElementById("nueva-categoria").value = "";
-      document.getElementById("nueva-cantidad").value = "";
-      cargarImplementos();
+      try {
+        const formData = new FormData();
+        formData.append("nombre", nombre);
+        formData.append("categoria", categoria);
+        formData.append("cantidad", cantidad);
+        
+        if (imagenInput.files[0]) {
+          formData.append("imagen", imagenInput.files[0]);
+        }
+
+        const response = await fetch("http://localhost:3000/implementos", {
+          method: "POST",
+          body: formData
+        });
+
+        if (response.ok) {
+          document.getElementById("nuevo-nombre").value = "";
+          document.getElementById("nueva-categoria").value = "";
+          document.getElementById("nueva-cantidad").value = "";
+          document.getElementById("nueva-imagen").value = "";
+          mostrarMensaje("Implemento agregado correctamente", true);
+          cargarImplementos();
+        } else {
+          const responseBody = await response.json();
+          throw new Error(responseBody.message || "Error al agregar el implemento");
+        }
+      } catch (error) {
+        console.error(error);
+        mostrarMensaje(error.message, false);
+      }
     }
 
-    async function guardarCantidad(id) {
+    // Guardar cambios en un implemento
+    async function guardarImplemento(id) {
+      const nombre = document.getElementById(`nombre-${id}`).value.trim();
+      const categoria = document.getElementById(`categoria-${id}`).value;
       const cantidad = document.getElementById(`cantidad-${id}`).value;
-      await fetch(`http://localhost:3000/implementos/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cantidad })
-      });
-      cargarImplementos();
+      const imagenInput = document.getElementById(`imagen-${id}`);
+
+      if (!nombre || !categoria || cantidad === "") {
+        return mostrarMensaje("Completa todos los campos obligatorios", false);
+      }
+
+      if (isNaN(cantidad) || cantidad < 0) {
+        return mostrarMensaje("La cantidad debe ser un número positivo", false);
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append("nombre", nombre);
+        formData.append("categoria", categoria);
+        formData.append("cantidad", cantidad);
+        
+        if (imagenInput.files[0]) {
+          formData.append("imagen", imagenInput.files[0]);
+        }
+
+        const response = await fetch(`http://localhost:3000/implementos/${id}`, {
+          method: "PUT",
+          body: formData
+        });
+
+        if (response.ok) {
+          mostrarMensaje("Implemento actualizado correctamente", true);
+          cargarImplementos();
+        } else {
+          const responseBody = await response.json();
+          throw new Error(responseBody.message || "Error al actualizar el implemento");
+        }
+      } catch (error) {
+        console.error(error);
+        mostrarMensaje(error.message, false);
+      }
     }
 
+    // Eliminar un implemento
     async function eliminarImplemento(id) {
-      await fetch(`http://localhost:3000/implementos/${id}`, {
-        method: "DELETE"
-      });
-      cargarImplementos();
+      if (!confirm("¿Estás seguro de que deseas eliminar este implemento?")) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/implementos/${id}`, {
+          method: "DELETE"
+        });
+
+        if (response.ok) {
+          mostrarMensaje("Implemento eliminado correctamente", true);
+          cargarImplementos();
+        } else {
+          const responseBody = await response.json();
+          throw new Error(responseBody.message || "Error al eliminar el implemento");
+        }
+      } catch (error) {
+        console.error(error);
+        mostrarMensaje(error.message, false);
+      }
     }
 
-    cargarImplementos();
+    // Mostrar mensajes de feedback
+    function mostrarMensaje(mensaje, esExito) {
+      const mensajeElemento = document.getElementById("message");
+      mensajeElemento.textContent = mensaje;
+      mensajeElemento.style.color = esExito ? "#00b894" : "#d63031";
+      
+      setTimeout(() => {
+        mensajeElemento.textContent = "";
+      }, 3000);
+    }
+
+    // Inicializar la carga de implementos
+    document.addEventListener('DOMContentLoaded', cargarImplementos);
   </script>
 </body>
 </html>

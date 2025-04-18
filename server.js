@@ -2,11 +2,15 @@
 const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Conexión a MySQL
 const conexion = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -22,86 +26,117 @@ conexion.connect((error) => {
     }
 });
 
-// Obtener todos los implementos
+// Subida de imágenes para implementos
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/'),
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ 
+    storage,
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|gif/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        if (extname && mimetype) {
+            cb(null, true);
+        } else {
+            cb('Error: Solo imágenes (jpeg, jpg, png, gif)');
+        }
+    },
+    limits: { fileSize: 5 * 1024 * 1024 }
+});
+
+// IMPLEMENTOS
 app.get("/implementos", (req, res) => {
-    const sql = "SELECT * FROM implementos";
-    conexion.query(sql, (err, resultados) => {
-        if (err) return res.status(500).json({ error: "Error al obtener los implementos" });
+    conexion.query("SELECT * FROM implementos", (err, resultados) => {
+        if (err) return res.status(500).json({ error: "Error al obtener implementos" });
         res.json(resultados);
     });
 });
 
-// Agregar un nuevo implemento
-app.post("/implementos", (req, res) => {
+app.post("/implementos", upload.single('imagen'), (req, res) => {
     const { nombre, categoria, cantidad } = req.body;
-    const sql = "INSERT INTO implementos (nombre, categoria, cantidad) VALUES (?, ?, ?)";
-    conexion.query(sql, [nombre, categoria, cantidad], (err, resultado) => {
+    const imagen_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+    const sql = "INSERT INTO implementos (nombre, categoria, cantidad, imagen_url) VALUES (?, ?, ?, ?)";
+    conexion.query(sql, [nombre, categoria, cantidad, imagen_url], (err, resultado) => {
         if (err) return res.status(500).json({ error: "Error al agregar implemento" });
-        res.json({ id: resultado.insertId, nombre, categoria, cantidad });
+        res.json({ id: resultado.insertId, nombre, categoria, cantidad, imagen_url });
     });
 });
 
-// Actualizar cantidad de un implemento
-app.put("/implementos/:id", (req, res) => {
-    const { cantidad } = req.body;
+app.put("/implementos/:id", upload.single('imagen'), (req, res) => {
+    const { nombre, categoria, cantidad } = req.body;
     const { id } = req.params;
-    const sql = "UPDATE implementos SET cantidad = ? WHERE id = ?";
-    conexion.query(sql, [cantidad, id], (err) => {
-        if (err) return res.status(500).json({ error: "Error al actualizar cantidad" });
-        res.json({ mensaje: "Cantidad actualizada" });
-    });
+
+    if (req.file) {
+        const imagen_url = `/uploads/${req.file.filename}`;
+        conexion.query("SELECT imagen_url FROM implementos WHERE id = ?", [id], (err, resultado) => {
+            if (resultado[0]?.imagen_url) {
+                const rutaAnterior = path.join(__dirname, resultado[0].imagen_url.substring(1));
+                if (fs.existsSync(rutaAnterior)) fs.unlinkSync(rutaAnterior);
+            }
+
+            const sql = "UPDATE implementos SET nombre = ?, categoria = ?, cantidad = ?, imagen_url = ? WHERE id = ?";
+            conexion.query(sql, [nombre, categoria, cantidad, imagen_url, id], (err) => {
+                if (err) return res.status(500).json({ error: "Error al actualizar implemento" });
+                res.json({ mensaje: "Implemento actualizado" });
+            });
+        });
+    } else {
+        const sql = "UPDATE implementos SET nombre = ?, categoria = ?, cantidad = ? WHERE id = ?";
+        conexion.query(sql, [nombre, categoria, cantidad, id], (err) => {
+            if (err) return res.status(500).json({ error: "Error al actualizar implemento" });
+            res.json({ mensaje: "Implemento actualizado" });
+        });
+    }
 });
 
-// Eliminar un implemento
 app.delete("/implementos/:id", (req, res) => {
     const { id } = req.params;
-    const sql = "DELETE FROM implementos WHERE id = ?";
-    conexion.query(sql, [id], (err) => {
-        if (err) return res.status(500).json({ error: "Error al eliminar implemento" });
-        res.json({ mensaje: "Implemento eliminado" });
+    conexion.query("SELECT imagen_url FROM implementos WHERE id = ?", [id], (err, resultado) => {
+        if (resultado[0]?.imagen_url) {
+            const ruta = path.join(__dirname, resultado[0].imagen_url.substring(1));
+            if (fs.existsSync(ruta)) fs.unlinkSync(ruta);
+        }
+        conexion.query("DELETE FROM implementos WHERE id = ?", [id], (err) => {
+            if (err) return res.status(500).json({ error: "Error al eliminar implemento" });
+            res.json({ mensaje: "Implemento eliminado" });
+        });
     });
 });
-// Verificar si el correo ya existe
+
+// VERIFICACIÓN DE CORREO
 app.get("/verificar", (req, res) => {
     const correo = req.query.correo;
-
     const sql = "SELECT * FROM usuarios WHERE correo = ?";
     conexion.query(sql, [correo], (error, resultados) => {
-        if (error) {
-            console.error("❌ Error al verificar correo:", error);
-            return res.status(500).json({ error: true });
-        }
-
-        if (resultados.length > 0) {
-            res.json({ registrado: true });
-        } else {
-            res.json({ registrado: false });
-        }
+        if (error) return res.status(500).json({ error: true });
+        res.json({ registrado: resultados.length > 0 });
     });
 });
-// Nueva ruta: Verificar si el correo ya está registrado
+
 app.post("/verificar-correo", (req, res) => {
     const { correo } = req.body;
+    if (!correo) return res.status(400).json({ registrado: false, mensaje: "Correo no proporcionado." });
 
-    if (!correo) {
-        return res.status(400).json({ registrado: false, mensaje: "❌ Correo no proporcionado." });
-    }
-
-    const sql = "SELECT * FROM usuarios WHERE correo = ?";
-    conexion.query(sql, [correo], (error, resultados) => {
-        if (error) {
-            console.error("❌ Error al verificar correo:", error);
-            return res.status(500).json({ registrado: false, mensaje: "❌ Error al consultar la base de datos." });
-        }
-
-        if (resultados.length > 0) {
-            res.json({ registrado: true });
-        } else {
-            res.json({ registrado: false });
-        }
+    conexion.query("SELECT * FROM usuarios WHERE correo = ?", [correo], (error, resultados) => {
+        if (error) return res.status(500).json({ registrado: false, mensaje: "Error de base de datos." });
+        res.json({ registrado: resultados.length > 0 });
     });
 });
-// Ruta para registrar datos (incluye correo)
+
+// REGISTRO
 app.post("/registro", (req, res) => {
     const { nombres, apellidos, tipo_documento, documento, telefono, correo } = req.body;
 
@@ -110,85 +145,34 @@ app.post("/registro", (req, res) => {
     }
 
     const sql = "INSERT INTO usuarios (nombres, apellidos, tipo_documento, documento, telefono, correo) VALUES (?, ?, ?, ?, ?, ?)";
-    conexion.query(sql, [nombres, apellidos, tipo_documento, documento, telefono, correo], (error, resultado) => {
-        if (error) {
-            console.error("❌ Error al insertar datos:", error);
-            res.status(500).json({ mensaje: "❌ Error al registrar en la base de datos." });
-        } else {
-            res.json({ mensaje: "✅ Registro exitoso" });
-        }
+    conexion.query(sql, [nombres, apellidos, tipo_documento, documento, telefono, correo], (error) => {
+        if (error) return res.status(500).json({ mensaje: "❌ Error al registrar en la base de datos." });
+        res.json({ mensaje: "✅ Registro exitoso" });
     });
 });
 
-
-// Ruta para mostrar registros en tabla
+// MOSTRAR REGISTROS
 app.get("/registros", (req, res) => {
-    const sql = "SELECT * FROM usuarios ORDER BY id DESC";
-    conexion.query(sql, (error, results) => {
-        if (error) {
-            console.error("❌ Error al obtener los datos:", error);
-            return res.status(500).send("<h2>❌ Error al obtener los datos.</h2>");
-        }
+    conexion.query("SELECT * FROM usuarios ORDER BY id DESC", (error, results) => {
+        if (error) return res.status(500).send("<h2>❌ Error al obtener los datos.</h2>");
 
         let html = `
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Lista de Registros</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; background-color: #f4f4f4; }
-                h2 { text-align: center; color: #333; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 10px; overflow: hidden; }
-                th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-                th { background-color: #4CAF50; color: white; }
-                tr:nth-child(even) { background-color: #f2f2f2; }
-                tr:hover { background-color: #ddd; }
-            </style>
-        </head>
-        <body>
-            <h2>Lista de Registros</h2>
-            ${results.length === 0 ? "<h3 style='text-align:center; color:red;'>❌ No hay registros disponibles.</h3>" : ""}
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Tipo de Documento</th>
-                        <th>Número de Documento</th>
-                        <th>Teléfono</th>
-                        <th>Correo</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
+        <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Registros</title>
+        <style>body{font-family:sans-serif;}table{border-collapse:collapse;width:100%}
+        th,td{border:1px solid #ccc;padding:10px;text-align:left}
+        th{background:#4CAF50;color:#fff}</style></head><body><h2>Lista de Registros</h2>
+        <table><thead><tr><th>ID</th><th>Nombre</th><th>Apellido</th><th>Tipo de Documento</th><th>Documento</th><th>Teléfono</th><th>Correo</th></tr></thead><tbody>`;
 
-        results.forEach(registro => {
-            html += `
-                <tr>
-                    <td>${registro.id}</td>
-                    <td>${registro.nombres}</td>
-                    <td>${registro.apellidos}</td>
-                    <td>${registro.tipo_documento}</td>
-                    <td>${registro.documento}</td>
-                    <td>${registro.telefono}</td>
-                    <td>${registro.correo}</td>
-                </tr>
-            `;
+        results.forEach(r => {
+            html += `<tr><td>${r.id}</td><td>${r.nombres}</td><td>${r.apellidos}</td><td>${r.tipo_documento}</td><td>${r.documento}</td><td>${r.telefono}</td><td>${r.correo}</td></tr>`;
         });
 
-        html += `
-                </tbody>
-            </table>
-        </body>
-        </html>
-        `;
-
+        html += `</tbody></table></body></html>`;
         res.send(html);
     });
 });
+
+// Iniciar servidor
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
