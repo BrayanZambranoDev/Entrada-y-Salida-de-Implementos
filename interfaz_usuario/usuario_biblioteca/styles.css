@@ -211,3 +211,168 @@ input[type="number"] {
   width: 100%;
 }
 
+/* Añade estos estilos a tu archivo styles.css */
+
+/* Estilos para el modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  overflow: auto;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  color: #888;
+}
+
+/* Estilos para la tabla del carrito */
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.cart-table th, .cart-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.cart-table th {
+  background-color: #f2f2f2;
+}
+
+.cart-item-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.cart-item-qty {
+  width: 60px;
+  padding: 5px;
+}
+
+.btn-eliminar {
+  background-color: #ff4545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-eliminar:hover {
+  background-color: #e03434;
+}
+
+/* Estilos para los botones de acción del carrito */
+.cart-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart-actions button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#btn-vaciar-carrito {
+  background-color: #ff4545;
+  color: white;
+}
+
+#btn-cerrar-carrito {
+  background-color: #ccc;
+  color: #333;
+}
+
+#btn-enviar-solicitud-modal {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#btn-vaciar-carrito:hover {
+  background-color: #e03434;
+}
+
+#btn-cerrar-carrito:hover {
+  background-color: #bbb;
+}
+
+#btn-enviar-solicitud-modal:hover {
+  background-color: #45a049;
+}
+/* Añade estos estilos a tu archivo styles.css */
+
+/* Estilos para los comentarios editables en el carrito */
+.cart-item-comment {
+  width: 100%;
+  min-width: 150px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.cart-item-comment:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* Ajustes para el botón de guardar cambios */
+#btn-guardar-cambios {
+  background-color: #2196F3;
+  color: white;
+}
+
+#btn-guardar-cambios:hover {
+  background-color: #0b7dda;
+}
+
+/* Para mejorar la distribución de los botones en el carrito */
+.cart-actions {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cart-actions button {
+  flex: 1;
+  margin: 0;
+  min-width: 120px;
+}

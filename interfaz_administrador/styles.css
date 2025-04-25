@@ -1,22 +1,25 @@
-/* Fuente personalizada */
-.fleur-de-leah-regular {
-  font-family: "Fleur De Leah", serif;
-  font-weight: 400;
-  font-style: normal;
+/* ============================== */
+/*         ESTILO GENERAL        */
+/* ============================== */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
 }
 
-/* Encabezado */
+/* ============================== */
+/*          ENCABEZADO           */
+/* ============================== */
 header {
   background-color: #d97a40;
   color: white;
   padding: 15px 20px;
-  text-align: center;
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombras suaves para el header */
-  animation: fadeIn 1s ease-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 header .container {
@@ -31,7 +34,6 @@ header .container {
   font-weight: bold;
   color: #ffffff;
   margin: 0 auto;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil en el logo */
 }
 
 .logout-button {
@@ -44,14 +46,13 @@ header .container {
   font-size: 16px;
   position: absolute;
   right: 40px;
-  transition: transform 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .logout-button:hover {
-  transform: translateX(10px);
+  background-color: #c9302c;
 }
 
-/* Botón de menú */
 .menu-toggle {
   background: none;
   border: none;
@@ -60,22 +61,20 @@ header .container {
   cursor: pointer;
   position: absolute;
   left: 20px;
-  transition: transform 0.3s ease;
 }
 
-.menu-toggle:hover {
-  transform: rotate(90deg); /* Animación sutil al pasar el mouse */
-}
-
-/* Contenedor principal */
+/* ============================== */
+/*            LAYOUT             */
+/* ============================== */
 .main-container {
   display: flex;
   flex: 1;
   margin-top: 70px;
-  animation: slideIn 0.5s ease-out;
 }
 
-/* Barra lateral */
+/* ============================== */
+/*           SIDEBAR             */
+/* ============================== */
 .sidebar {
   background-color: #d97a40;
   color: white;
@@ -83,37 +82,32 @@ header .container {
   padding: 20px;
   height: 100vh;
   transition: transform 0.3s ease;
-  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* Sombra para la barra lateral */
-  animation: slideLeft 0.5s ease-out;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar h3 {
   text-align: center;
-  font-size: 22px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 
 .sidebar a {
   display: block;
   padding: 12px;
   margin-bottom: 12px;
-  font-size: 18px;
+  font-size: 16px;
   text-decoration: none;
   color: white;
   border-radius: 5px;
   transition: background-color 0.3s, padding-left 0.3s;
-  transform: scale(1);
-  transition: all 0.3s ease;
 }
 
 .sidebar a:hover {
   background-color: #007b99;
   padding-left: 20px;
-  transform: scale(1.05); /* Efecto de crecimiento sutil */
 }
 
-/* Submenú de Implementos */
+/* Submenús */
 .submenu a {
   font-weight: bold;
 }
@@ -124,17 +118,16 @@ header .container {
 }
 
 .submenu-content a {
-  font-size: 16px;
+  font-size: 15px;
   padding: 8px;
   background-color: #f1f1f1;
   border-radius: 5px;
   margin-bottom: 5px;
-  transition: background-color 0.3s ease, padding-left 0.3s;
+  transition: background-color 0.3s ease;
 }
 
 .submenu-content a:hover {
   background-color: #007b99;
-  padding-left: 20px;
   color: white;
 }
 
@@ -142,241 +135,91 @@ header .container {
   display: block !important;
 }
 
-/* Contenido principal */
-main {
-  padding: 20px;
-  flex-grow: 1;
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  justify-content: center;
-  animation: fadeInMain 1s ease-out;
-}
-
-/* Centrar el contenedor de categorías */
-.category-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  justify-content: center;
-  max-width: 900px;
-  margin: 0 auto;
-  animation: gridPop 1s ease-out;
-}
-
-/* Categoría */
-.category {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: fadeInCategory 0.7s ease-out;
-}
-
-.category:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Efecto de sombra más intenso */
-}
-
-/* Imágenes */
-.category img {
-  width: 70%;
-  height: auto;
-  object-fit: cover;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
-}
-
-.category img:hover {
-  transform: scale(1.1); /* Efecto de zoom suave */
-}
-
-/* Nuevo recuadro de solicitudes aprobadas */
-.approved-requests {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-left: 20px;
-  text-align: center;
-  height: fit-content;
-  animation: fadeInBox 0.7s ease-out;
-}
-
-.approved-requests h2 {
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 15px;
-}
-
-/* Nuevo recuadro de solicitudes pendientes */
+/* ============================== */
+/*        CONTENIDO MAIN         */
+/* ============================== */
 .pending-requests {
-  background-color: #fff;
-  padding: 20px;
+  background-color: white;
+  padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-left: 20px;
-  text-align: left;
-  height: fit-content;
-  max-height: 500px;
-  overflow-y: auto; /* Permite desplazamiento si hay muchas solicitudes */
-  animation: fadeInBox 0.7s ease-out;
+  margin: 20px;
+  flex: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+  animation: fadeIn 0.8s ease-out;
 }
 
 .pending-requests h2 {
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
+  font-size: 24px;
   margin-bottom: 20px;
+  color: #d97a40;
 }
 
-/* Estilo para cada solicitud */
-.request-item {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* ============================== */
+/*             CARDS             */
+/* ============================== */
+.card {
+  background-color: #ffffff;
+  border-left: 5px solid #007b99;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease;
 }
 
-.request-item:hover {
-  transform: scale(1.02); /* Efecto de crecimiento al pasar el mouse */
+.card:hover {
+  transform: scale(1.02);
 }
 
-.request-item span {
-  font-weight: bold;
+.card h3 {
+  font-size: 20px;
+  color: #d97a40;
 }
 
-.request-item strong {
+.card p {
+  margin: 5px 0;
+  font-size: 15px;
+}
+
+.card h4 {
+  font-size: 17px;
   color: #007b99;
+  margin-top: 15px;
 }
 
-/* Estilo para el enlace de "Acceder" */
-.request-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.access-button {
-  padding: 8px 15px;
-  font-size: 14px;
-  text-decoration: none;
-  background-color: #007b99;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.access-button:hover {
-  background-color: #005f73; /* Color más oscuro al pasar el cursor */
-  transform: scale(1.1); /* Efecto de aumento */
-}
-
-/* Submenú en el sidebar para las solicitudes aprobadas y por fuera */
-.submenu-content.aprobadas, .submenu-content.porfuera {
-  display: none;
+.card ul {
+  margin-top: 10px;
   padding-left: 20px;
 }
 
-.submenu-content.aprobadas a, .submenu-content.porfuera a {
-  font-size: 16px;
-  padding: 8px;
-  background-color: #f1f1f1;
-  margin-bottom: 5px;
-  border-radius: 5px;
+.card ul li {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.card .access-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #007b99;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.submenu-content.aprobadas a:hover, .submenu-content.porfuera a:hover {
-  background-color: #007b99;
-  color: white;
+.card .access-button:hover {
+  background-color: #005f73;
 }
 
-/* Mostrar las solicitudes aprobadas y por fuera en el sidebar */
-.show-aprobadas, .show-porfuera {
-  display: block !important;
-}
-
-/* Animaciones */
+/* ============================== */
+/*         ANIMACIONES           */
+/* ============================== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInMain {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideLeft {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeInCategory {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInBox {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes gridPop {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }

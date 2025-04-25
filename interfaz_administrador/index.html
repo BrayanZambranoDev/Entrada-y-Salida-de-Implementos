@@ -1,81 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Préstamo de Implementos</title>
-    
-    <!-- Conexión a Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Préstamo de Implementos</title>
 
-    <!-- Estilos CSS -->
-    <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-            <h1 class="logo">Préstamo de Implementos</h1>
-            <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
+  <header>
+    <div class="container">
+      <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+      <h1 class="logo">Préstamo de Implementos</h1>
+      <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <div class="main-container">
+
+    <!-- Barra lateral -->
+    <div class="sidebar" id="sidebar">
+      <h3>Menú</h3>
+
+      <!-- Submenú Implementos -->
+      <div class="submenu">
+        <a href="#" onclick="toggleSubmenu(event)">Implementos ▼</a>
+        <div class="submenu-content" id="submenu-implementos">
+          <a href="http://127.0.0.1:5500/interfaz_administrador/base.html">Agregar o quitar Implementos</a>
         </div>
-    </header>
+      </div>
 
-    <!-- Contenedor principal -->
-    <div class="main-container">
-        <!-- Barra lateral -->
-        <div class="sidebar" id="sidebar">
-            <h3 class=>Menú</h3>
-            
-            <!-- Implementos con Submenú -->
-            <div class="submenu">
-                <a href="#" onclick="toggleSubmenu()">Implementos ▼</a>
-                <div class="submenu-content" id="submenu">
-                    <a href="http://127.0.0.1:5500/interfaz_administrador/base.html">Agregar o quitar Implementos</a>
-           
-                </div>
-            </div>
-
-             <!-- solicitudes con Submenú -->
-             <div class="submenu">
-                <a href="#" onclick="toggleSubmenu()">Solicitudes ▼</a>
-                <div class="submenu-content" id="submenu">
-                    <a href="en_espera_administrador/index.html">en espera</a>
-                    <a href="entregadas_administrador/index.html">entregadas</a>
-                </div>
-            </div>
-
+      <!-- Submenú Solicitudes -->
+      <div class="submenu">
+        <a href="#" onclick="toggleSubmenu(event)">Solicitudes ▼</a>
+        <div class="submenu-content" id="submenu-solicitudes">
+          <a href="en_espera_administrador/index.html">En espera</a>
+          <a href="entregadas_administrador/index.html">Entregadas</a>
         </div>
-
-        <!-- recuadro para ver las solicitudes que realizen los usuarios -->
-        <aside class="pending-requests">
-            <h2>Solicitudes Pendientes</h2>
-        
-            <!-- Solicitud de ejemplo -->
-            <div class="request-item">
-                <span class="user-name">Juan Pérez</span> ha hecho una solicitud</strong>
-                <div class="request-actions">
-                    <a href="#" class="access-button" onclick="accederSolicitud('Teclado', 'Juan Pérez')">verificar</a>
-                </div>
-            </div>
-        
-            <!-- Solicitud de ejemplo -->
-            <div class="request-item">
-                <span class="user-name">María López</span> ha hecho una solicitud</strong>
-                <div class="request-actions">
-                    <a href="#" class="access-button" onclick="accederSolicitud('Mouse', 'María López')">verificar</a>
-                </div>
-            </div>
-        
-            <!-- Más solicitudes pueden agregarse aquí -->
-        </aside>
-        
-        
+      </div>
     </div>
 
-    <script src="scrip.js"></script>
+    <!-- Contenedor de solicitudes dinámicas -->
+    <aside class="pending-requests" id="contenedor-solicitudes">
+      <h2>Solicitudes Pendientes</h2>
+      <p>Cargando solicitudes...</p>
+    </aside>
+
+  </div>
+
+  <script src="scrip.js"></script>
 
 </body>
 </html>

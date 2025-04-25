@@ -28,9 +28,7 @@ function handleCredentialResponse(response) {
             .then(data => {
                 if (data.registrado) {
                     alert("✅ Bienvenido de nuevo: " + email);
-                    setTimeout(() => {
-                        window.location.href = "http://127.0.0.1:5500/interfaz_usuario/index.html";
-                    }, 1500);
+                    window.location.href = "http://127.0.0.1:5500/interfaz_usuario/index.html";  // Página de usuario
                 } else {
                     alert("✅ Acceso aprobado, completa tu registro: " + email);
                     setTimeout(() => {
@@ -47,6 +45,7 @@ function handleCredentialResponse(response) {
         alert("❌ Acceso denegado: Debes usar un correo @amigo.edu.co");
     }
 }
+
 
 function parseJwt(token) {
     let base64Url = token.split('.')[1];

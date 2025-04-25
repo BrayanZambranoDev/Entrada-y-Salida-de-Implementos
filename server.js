@@ -122,9 +122,15 @@ app.get("/verificar", (req, res) => {
     const sql = "SELECT * FROM usuarios WHERE correo = ?";
     conexion.query(sql, [correo], (error, resultados) => {
         if (error) return res.status(500).json({ error: true });
-        res.json({ registrado: resultados.length > 0 });
+
+        if (resultados.length > 0) {
+            res.json({ registrado: true, rol: resultados[0].rol }); // Asegúrate de que el rol esté aquí
+        } else {
+            res.json({ registrado: false });
+        }
     });
 });
+
 
 app.post("/verificar-correo", (req, res) => {
     const { correo } = req.body;
@@ -171,6 +177,86 @@ app.get("/registros", (req, res) => {
         res.send(html);
     });
 });
+
+
+
+
+app.post("/guardar-solicitud", (req, res) => {
+    const { items } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ mensaje: "❌ No hay datos válidos en la solicitud" });
+    }
+
+    const valores = items.map(item => [
+        item.usuario,
+        item.nombre,
+        item.cantidad,
+        item.comentario || ''
+    ]);
+
+    const sql = `INSERT INTO solicitudes (nombre_usuario, nombre_producto, cantidad, comentario) VALUES ?`;
+
+    conexion.query(sql, [valores], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ mensaje: "❌ Error al registrar la solicitud" });
+        }
+
+        res.json({ mensaje: "✅ Solicitudes registradas exitosamente" });
+    });
+});
+
+
+// Obtener todas las solicitudes
+// Obtener todas las solicitudes, filtradas por rol (categoria)
+// Obtener todas las solicitudes
+app.get("/solicitudes", (req, res) => {
+    const sql = `
+        SELECT 
+            s.id, s.nombre_usuario, s.nombre_producto, s.cantidad, s.comentario, s.estado, s.fecha, s.fecha_entrega,
+            u.nombres, u.apellidos, u.documento, u.telefono
+        FROM solicitudes s
+        LEFT JOIN usuarios u ON s.nombre_usuario = u.correo
+        ORDER BY s.id DESC
+    `;
+    
+    conexion.query(sql, (err, resultados) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: "❌ Error al obtener las solicitudes" });
+        }
+
+        res.json(resultados);
+    });
+});
+
+
+// Actualizar el estado de solicitudes por ID
+app.post("/actualizar-estado-solicitudes", (req, res) => {
+    const { ids, nuevoEstado } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0 || !nuevoEstado) {
+        return res.status(400).json({ mensaje: "❌ Datos inválidos" });
+    }
+
+    const placeholders = ids.map(() => '?').join(',');
+    const sql = nuevoEstado === "entregada"
+        ? `UPDATE solicitudes SET estado = ?, fecha_entrega = NOW() WHERE id IN (${placeholders})`
+        : `UPDATE solicitudes SET estado = ? WHERE id IN (${placeholders})`;
+
+    const values = [nuevoEstado, ...ids];
+
+    conexion.query(sql, values, (err, result) => {
+        if (err) {
+            console.error("❌ Error al actualizar estado:", err);
+            return res.status(500).json({ mensaje: "❌ Error interno" });
+        }
+
+        res.json({ mensaje: "✅ Estado actualizado correctamente", actualizados: result.affectedRows });
+    });
+});
+
 
 // Iniciar servidor
 const PORT = 3000;

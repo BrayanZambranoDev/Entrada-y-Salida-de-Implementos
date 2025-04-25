@@ -1,60 +1,81 @@
-
 function cerrarSesion() {
-    // Redirigir a la página de inicio de sesión
     window.location.href = "../index.html";
 }
 
-// Función para mostrar/ocultar submenús de forma independiente
 function toggleSubmenu(event) {
-    event.preventDefault(); // Evita el comportamiento predeterminado del enlace
-    var submenu = event.target.nextElementSibling;
-
-    if (submenu.classList.contains("show")) {
-        submenu.classList.remove("show");
-    } else {
-        // Ocultar cualquier otro submenú abierto
-        document.querySelectorAll(".submenu-content").forEach(function (el) {
-            el.classList.remove("show");
-        });
-        submenu.classList.add("show");
-    }
+    event.preventDefault();
+    const submenu = event.target.nextElementSibling;
+    document.querySelectorAll(".submenu-content").forEach(el => el.classList.remove("show"));
+    submenu.classList.toggle("show");
 }
 
-// Agregar eventos a los enlaces de los submenús
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".submenu > a").forEach(function (menuLink) {
+function accederSolicitud(producto, usuario) {
+    window.location.href = `en_espera_administrador/index.html?producto=${encodeURIComponent(producto)}&usuario=${encodeURIComponent(usuario)}`;
+}
+
+function cargarSolicitudes() {
+    fetch("http://localhost:3000/solicitudes")
+        .then(res => res.json())
+        .then(data => {
+            const contenedor = document.getElementById("contenedor-solicitudes");
+            contenedor.innerHTML = "<h2>Solicitudes Pendientes</h2>";
+
+            const pendientes = data.filter(s => s.estado === "pendiente");
+
+            if (pendientes.length === 0) {
+                contenedor.innerHTML += "<p>No hay solicitudes pendientes.</p>";
+                return;
+            }
+
+            const agrupadas = {};
+            pendientes.forEach(s => {
+                if (!agrupadas[s.nombre_usuario]) {
+                    agrupadas[s.nombre_usuario] = {
+                        usuario: s,
+                        productos: []
+                    };
+                }
+                agrupadas[s.nombre_usuario].productos.push(s);
+            });
+
+            Object.values(agrupadas).forEach(({ usuario, productos }) => {
+                const item = document.createElement("div");
+                item.className = "card";
+
+                item.innerHTML = `
+                    <h3><strong>${usuario.nombres} ${usuario.apellidos}</strong></h3>
+                    <p><strong>📧 Correo:</strong> ${usuario.nombre_usuario}</p>
+                    <p><strong>🆔 Documento:</strong> ${usuario.documento}</p>
+                    <p><strong>📞 Teléfono:</strong> ${usuario.telefono}</p>
+                    <hr>
+                    <h4>🧾 Productos solicitados:</h4>
+                    <ul>
+                        ${productos.map(p => `
+                            <li>
+                                <strong>${p.nombre_producto}</strong> (${p.cantidad})<br>
+                                <em>Comentario:</em> ${p.comentario || 'Sin comentario'}<br>
+                                <em>Fecha de pedido:</em> ${new Date(p.fecha).toLocaleString()}
+                            </li>
+                        `).join("")}
+                    </ul>
+                    <div class="request-actions">
+                        <button class="access-button" onclick="accederSolicitud('${productos[0].nombre_producto}', '${usuario.nombre_usuario}')">Verificar</button>
+                    </div>
+                `;
+
+                contenedor.appendChild(item);
+            });
+        })
+        .catch(err => {
+            console.error("❌ Error al cargar solicitudes:", err);
+            document.getElementById("contenedor-solicitudes").innerHTML += "<p>Error al cargar solicitudes.</p>";
+        });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".submenu > a").forEach(menuLink => {
         menuLink.addEventListener("click", toggleSubmenu);
     });
+
+    cargarSolicitudes();
 });
-
-
-// Función para acceder a la solicitud y redirigir a la página de gestión
-function accederSolicitud(producto, usuario) {
-    // Aquí puedes redirigir a otra sección para gestionar la solicitud
-    alert("Accediendo a la solicitud de " + usuario );
-
-    // Aquí puedes agregar la lógica para redirigir a la página correspondiente
-    // Por ejemplo: window.location.href = 'pagina_de_gestion.html'; 
-    // Si usas una página externa para la gestión de solicitudes
-    window.location.href = 'en_espera_administrador/index.html?producto=' + producto + '&usuario=' + usuario;
-
-
-}
-
-// Función para mover la solicitud a "Aprobadas" o "Por Fuera" en el sidebar
-function moverSolicitud(submenu, producto, usuario) {
-    const subMenu = document.querySelector(submenu);
-    const nuevaSolicitud = document.createElement('a');
-    nuevaSolicitud.href = '#';
-    nuevaSolicitud.textContent = `${usuario} ha solicitado ${producto}`;
-
-    // Añadirlo al submenú de "Aprobadas" o "Por Fuera"
-    subMenu.appendChild(nuevaSolicitud);
-
-    // Mostrar el submenú si no está visible
-    if (!subMenu.classList.contains('show-aprobadas') && submenu === '.submenu-content.aprobadas') {
-        subMenu.classList.add('show-aprobadas');
-    } else if (!subMenu.classList.contains('show-porfuera') && submenu === '.submenu-content.porfuera') {
-        subMenu.classList.add('show-porfuera');
-    }
-}

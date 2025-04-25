@@ -1,55 +1,163 @@
-
 function cerrarSesion() {
-    // Redirigir a la página de inicio de sesión
-    window.location.href = "../index.html";
+  window.location.href = "../index.html";
 }
 
-// Función para mostrar/ocultar submenús de forma independiente
 function toggleSubmenu(event) {
-    event.preventDefault(); // Evita el comportamiento predeterminado del enlace
-    var submenu = event.target.nextElementSibling;
-
-    if (submenu.classList.contains("show")) {
-        submenu.classList.remove("show");
-    } else {
-        // Ocultar cualquier otro submenú abierto
-        document.querySelectorAll(".submenu-content").forEach(function (el) {
-            el.classList.remove("show");
-        });
-        submenu.classList.add("show");
-    }
+  event.preventDefault();
+  const submenu = event.target.nextElementSibling;
+  document.querySelectorAll(".submenu-content").forEach(el => el.classList.remove("show"));
+  submenu.classList.toggle("show");
 }
 
-// Agregar eventos a los enlaces de los submenús
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".submenu > a").forEach(function (menuLink) {
-        menuLink.addEventListener("click", toggleSubmenu);
-    });
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const usuarioParam = params.get("usuario");
+
+  if (usuarioParam) {
+    mostrarSolicitudesDeUsuario(usuarioParam);
+  } else {
+    mostrarTodasLasSolicitudesPendientes();
+  }
+
+  document.addEventListener("submit", function (event) {
+    if (event.target.classList.contains("entrega-form")) {
+      confirmarEntrega(event);
+    }
+  });
+
+  document.querySelectorAll(".submenu > a").forEach(menuLink => {
+    menuLink.addEventListener("click", toggleSubmenu);
+  });
 });
 
+function mostrarSolicitudesDeUsuario(usuario) {
+  document.getElementById("titulo-solicitud").textContent = `${usuario} ha solicitado`;
 
-// Función para aprobar solicitud
-function aprobarSolicitud(producto, usuario) {
-    // Crear un nuevo elemento para el submenú de solicitudes aprobadas
-    const aprobadasList = document.querySelector('.submenu-content.aprobadas');
-    const nuevaSolicitud = document.createElement('a');
-    nuevaSolicitud.href = '#';
-    nuevaSolicitud.textContent = `${usuario} ha solicitado ${producto}`;
+  fetch("http://localhost:3000/solicitudes")
+    .then(res => res.json())
+    .then(data => {
+      const solicitudes = data.filter(
+        item => item.nombre_usuario === usuario && item.estado === "pendiente"
+      );
 
-    // Añadirlo al submenú de solicitudes aprobadas
-    aprobadasList.appendChild(nuevaSolicitud);
+      const contenedor = document.getElementById("items-solicitados");
+      contenedor.innerHTML = "";
 
-    // Mostrar el submenú de aprobadas si no está visible
-    if (!aprobadasList.classList.contains('show-aprobadas')) {
-        aprobadasList.classList.add('show-aprobadas');
-    }
+      if (solicitudes.length === 0) {
+        contenedor.innerHTML = "<p>No hay implementos pendientes para este usuario.</p>";
+        return;
+      }
 
-    // Opcional: Eliminar la solicitud aprobada del recuadro de solicitudes pendientes
-    const solicitud = event.target.closest('.request-item');
-    solicitud.remove();
+      const info = solicitudes[0];
+      const grupo = document.createElement("div");
+      grupo.className = "card";
+      grupo.innerHTML = `
+        <h3>${info.nombres} ${info.apellidos}</h3>
+        <p><strong>Correo:</strong> ${info.nombre_usuario}</p>
+        <p><strong>Documento:</strong> ${info.documento}</p>
+        <p><strong>Teléfono:</strong> ${info.telefono}</p>
+        <hr>
+        <h4>📦 Implementos pendientes:</h4>
+        <form class="entrega-form">
+          <ul>
+            ${solicitudes.map(item => `
+              <li>
+                <label>
+                  <input type="checkbox" name="item" value="${item.id}">
+                  ${item.nombre_producto} (${item.cantidad}) — 
+                  <em>${item.comentario || 'Sin comentario'}</em> — 
+                  <small><strong>Fecha de pedido:</strong> ${new Date(item.fecha).toLocaleString()}</small>
+                </label>
+              </li>
+            `).join("")}
+          </ul>
+          <button type="submit">Confirmar Entrega</button>
+        </form>
+      `;
+
+      contenedor.appendChild(grupo);
+    });
 }
 
-    document.getElementById("entrega-form").addEventListener("submit", function(event) {
-        event.preventDefault(); // Evita que la página se recargue
-        alert("Entrega confirmada.");
+function mostrarTodasLasSolicitudesPendientes() {
+  document.getElementById("titulo-solicitud").textContent = "Solicitudes Pendientes";
+
+  fetch("http://localhost:3000/solicitudes")
+    .then(res => res.json())
+    .then(data => {
+      const pendientes = data.filter(s => s.estado === "pendiente");
+      const contenedor = document.getElementById("items-solicitados");
+      contenedor.innerHTML = "";
+
+      if (pendientes.length === 0) {
+        contenedor.innerHTML = "<p>No hay solicitudes pendientes.</p>";
+        return;
+      }
+
+      const agrupadas = {};
+
+      pendientes.forEach(s => {
+        if (!agrupadas[s.nombre_usuario]) agrupadas[s.nombre_usuario] = [];
+        agrupadas[s.nombre_usuario].push(s);
+      });
+
+      Object.entries(agrupadas).forEach(([usuario, solicitudes]) => {
+        const datos = solicitudes[0];
+
+        const grupo = document.createElement("div");
+        grupo.className = "card";
+        grupo.innerHTML = `
+          <h3>${datos.nombres} ${datos.apellidos}</h3>
+          <p><strong>Correo:</strong> ${datos.nombre_usuario}</p>
+          <p><strong>Documento:</strong> ${datos.documento}</p>
+          <p><strong>Teléfono:</strong> ${datos.telefono}</p>
+          <hr>
+          <h4>📦 Implementos pendientes:</h4>
+          <form class="entrega-form">
+            <ul>
+              ${solicitudes.map(item => `
+                <li>
+                  <label>
+                    <input type="checkbox" name="item" value="${item.id}">
+                    ${item.nombre_producto} (${item.cantidad}) — 
+                    <em>${item.comentario || 'Sin comentario'}</em> — 
+                    <small><strong>Fecha de pedido:</strong> ${new Date(item.fecha).toLocaleString()}</small>
+                  </label>
+                </li>
+              `).join("")}
+            </ul>
+            <button type="submit">Confirmar Entrega</button>
+          </form>
+        `;
+
+        contenedor.appendChild(grupo);
+      });
     });
+}
+
+function confirmarEntrega(event) {
+  event.preventDefault();
+
+  const seleccionados = Array.from(event.target.querySelectorAll('input[name="item"]:checked')).map(
+    input => parseInt(input.value)
+  );
+
+  if (seleccionados.length === 0) {
+    alert("Selecciona al menos un implemento para confirmar la entrega.");
+    return;
+  }
+
+  fetch("http://localhost:3000/actualizar-estado-solicitudes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids: seleccionados, nuevoEstado: "entregada" })
+  })
+    .then(res => res.json())
+    .then(() => {
+      alert("✅ Entrega confirmada.");
+      window.location.reload();
+    })
+    .catch(err => {
+      console.error("Error al actualizar estado:", err);
+    });
+}

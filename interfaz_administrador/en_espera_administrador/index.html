@@ -1,85 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Préstamo de Implementos</title>
-    
-    <!-- Conexión a Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solicitudes en Espera | Préstamo de Implementos</title>
 
-    <!-- Estilos CSS -->
-    <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <header>
-        <div class="container">
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-            <h1 class="logo">Préstamo de Implementos</h1>
-            <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
+  <header>
+    <div class="container">
+      <button class="menu-toggle" onclick="toggleMenu()">
+        <span></span>
+      </button>
+      
+      <h1 class="logo">Préstamo de Implementos</h1>
+      <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <h3>Menú</h3>
+
+      <div class="submenu">
+        <a href="#" onclick="toggleSubmenu(event)">Implementos ▼</a>
+        <div class="submenu-content">
+          <a href="../interfaz_administrador/base.html">Agregar o quitar Implementos</a>
         </div>
-    </header>
+      </div>
 
-    <!-- Contenedor principal -->
-    <div class="main-container">
-        <!-- Barra lateral -->
-        <div class="sidebar" id="sidebar">
-            <h3 class="menu-title">Menú</h3>
-            
-            <!-- Implementos con Submenú -->
-            <div class="submenu">
-                <a href="#" onclick="toggleSubmenu()">Implementos ▼</a>
-                <div class="submenu-content" id="submenu">
-                    <a href="#">Agregar Implemento</a>
-                    <a href="#">Quitar Implemento</a>
-                </div>
-            </div>
-
-             <!-- solicitudes con Submenú -->
-             <div class="submenu">
-                <a href="#" onclick="toggleSubmenu()">Solicitudes ▼</a>
-                <div class="submenu-content" id="submenu">
-                    <a href="../entregadas_administrador/index.html">Entregadas</a>
-                </div>
-            </div>
-
-            <!-- Enlace al Home, fuera del submenú -->
-            <a href="../index.html" class="home-link">Ir a la pagina principal</a> <!-- Enlace destacado para ir al Home -->
-
+      <div class="submenu">
+        <a href="#" onclick="toggleSubmenu(event)">Solicitudes ▼</a>
+        <div class="submenu-content">
+          <a href="index.html">En espera</a>
+          <a href="../entregadas_administrador/index.html">Entregadas</a>
         </div>
+      </div>
 
-        <!-- Contenido Principal -->
-        <main>
-            <div class="container">
-                <section class="category-container">
-                    <div class="category">
-                        <h1 class="category-title">Juan Pérez ha solicitado</h1>
-                        <form class="entrega-form">
-                            <label><input type="checkbox" name="item" value="Mouse"> Mouse</label><br>
-                            <label><input type="checkbox" name="item" value="Portátil"> Portátil</label><br>
-                            <label><input type="checkbox" name="item" value="Teclado"> Teclado</label><br>
-                            <button type="submit">Confirmar Entrega</button>
-                        </form>
-                    </div>
-        
-                    <div class="category">
-                        <h1 class="category-title">Maria López ha solicitado</h1>
-                        <form class="entrega-form">
-                            <label><input type="checkbox" name="item" value="Teclado"> Teclado</label><br>
-                            <label><input type="checkbox" name="item" value="Funda Portátil"> Funda Portátil</label><br>
-                            <label><input type="checkbox" name="item" value="Proyector"> Proyector</label><br>
-                            <button type="submit">Confirmar Entrega</button>
-                        </form>
-                    </div>
-                </section>
-            </div>
-        </main>
+      <a href="../index.html" class="home-link">Ir a la página principal</a>
     </div>
 
-    <script src="scrip.js"></script>
+    <!-- Contenedor dinámico de solicitudes -->
+    <main class="container">
+      <section class="pending-requests" id="contenedor-solicitud">
+        <h1 class="category-title" id="titulo-solicitud">Solicitudes Pendientes</h1>
+        <div id="items-solicitados">
+          <p>Cargando datos...</p>
+        </div>
+      </section>
+    </main>
+  </div>
 
+  <script src="scrip.js"></script>
 </body>
 </html>
