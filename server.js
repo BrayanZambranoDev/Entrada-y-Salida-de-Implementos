@@ -14,7 +14,7 @@ app.use(cors());
 const conexion = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "root",
+    password: "TuNuevaPass123!",
     database: "registro_usuarios"
 });
 
@@ -181,55 +181,78 @@ app.get("/registros", (req, res) => {
 
 
 
+// 1) POST /guardar-solicitud (reemplaza tu ruta actual)
 app.post("/guardar-solicitud", (req, res) => {
     const { items } = req.body;
-
-    if (!items || !Array.isArray(items) || items.length === 0) {
-        return res.status(400).json({ mensaje: "❌ No hay datos válidos en la solicitud" });
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ mensaje: "No hay datos válidos en la solicitud" });
     }
-
-    const valores = items.map(item => [
-        item.usuario,
-        item.nombre,
-        item.cantidad,
-        item.comentario || ''
-    ]);
-
-    const sql = `INSERT INTO solicitudes (nombre_usuario, nombre_producto, cantidad, comentario) VALUES ?`;
-
-    conexion.query(sql, [valores], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ mensaje: "❌ Error al registrar la solicitud" });
+  
+    // 2) Por cada item, consulta la categoría de ese producto
+    const promesas = items.map(item => new Promise((resolve, reject) => {
+      conexion.query(
+        "SELECT categoria FROM implementos WHERE nombre = ?",
+        [item.nombre],
+        (err, rows) => {
+          if (err) return reject(err);
+          if (!rows.length) return reject(new Error(`Implemento "${item.nombre}" no existe`));
+          resolve([
+            item.usuario,
+            item.nombre,
+            item.cantidad,
+            item.comentario || "",
+            rows[0].categoria         // ← aquí obtienes “Biblioteca”, “Mercadeo”, etc.
+          ]);
         }
-
-        res.json({ mensaje: "✅ Solicitudes registradas exitosamente" });
-    });
-});
-
+      );
+    }));
+  
+    // 3) Cuando todas las categorías estén listas, inserta en bloque
+    Promise.all(promesas)
+      .then(valores => {
+        // Ahora sí guardamos también la columna `categoria`
+        conexion.query(
+          `INSERT INTO solicitudes
+             (nombre_usuario, nombre_producto, cantidad, comentario, categoria)
+           VALUES ?`,
+          [valores],
+          (err, result) => {
+            if (err) {
+              console.error("Error al registrar solicitud:", err);
+              return res.status(500).json({ mensaje: "Error al registrar solicitud" });
+            }
+            res.json({
+              mensaje: `Solicitudes registradas (${result.affectedRows})`
+            });
+          }
+        );
+      })
+      .catch(err => {
+        console.error("Error obteniendo categoría:", err);
+        res.status(400).json({ mensaje: err.message });
+      });
+  });
+  
 
 // Obtener todas las solicitudes
 // Obtener todas las solicitudes, filtradas por rol (categoria)
 // Obtener todas las solicitudes
 app.get("/solicitudes", (req, res) => {
     const sql = `
-        SELECT 
-            s.id, s.nombre_usuario, s.nombre_producto, s.cantidad, s.comentario, s.estado, s.fecha, s.fecha_entrega,
-            u.nombres, u.apellidos, u.documento, u.telefono
-        FROM solicitudes s
-        LEFT JOIN usuarios u ON s.nombre_usuario = u.correo
-        ORDER BY s.id DESC
+      SELECT
+        s.id, s.nombre_usuario, s.nombre_producto, s.cantidad,
+        s.comentario, s.estado, s.fecha, s.fecha_entrega, s.categoria,
+        u.nombres, u.apellidos, u.documento, u.telefono
+      FROM solicitudes s
+      LEFT JOIN usuarios u ON s.nombre_usuario = u.correo
+      ORDER BY s.id DESC
     `;
-    
-    conexion.query(sql, (err, resultados) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: "❌ Error al obtener las solicitudes" });
-        }
-
-        res.json(resultados);
+    conexion.query(sql, (err, rows) => {
+      if (err) return res.status(500).json({ error: "Error al obtener solicitudes" });
+      res.json(rows);
     });
-});
+  });
+  
 
 
 // Actualizar el estado de solicitudes por ID
