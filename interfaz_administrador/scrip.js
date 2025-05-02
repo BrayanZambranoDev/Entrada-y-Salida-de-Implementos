@@ -1,4 +1,7 @@
 function cerrarSesion() {
+    // Limpiar datos de sesión
+    localStorage.removeItem('correo');
+    localStorage.removeItem('rol');
     window.location.href = "../index.html";
 }
 
@@ -14,16 +17,41 @@ function accederSolicitud(producto, usuario) {
 }
 
 function cargarSolicitudes() {
-    fetch("http://localhost:3000/solicitudes")
-        .then(res => res.json())
+    // Obtener correo del administrador del localStorage
+    const adminCorreo = localStorage.getItem('correo');
+    const adminRol = localStorage.getItem('rol');
+    
+    if (!adminCorreo) {
+        alert('No hay sesión activa. Redirigiendo al inicio...');
+        window.location.href = "../index.html";
+        return;
+    }
+    
+    // Actualizar información del administrador en la interfaz si hay un elemento para ello
+    const adminInfoElement = document.getElementById('admin-info');
+    if (adminInfoElement) {
+        adminInfoElement.textContent = `Administrador: ${adminCorreo} (${adminRol})`;
+    }
+    
+    // Mostrar indicador de carga
+    const contenedor = document.getElementById("contenedor-solicitudes");
+    contenedor.innerHTML = "<h2>Cargando solicitudes...</h2>";
+    
+    // Realizar la petición al endpoint modificado para filtrar por rol
+    fetch(`http://localhost:3000/solicitudes?correo=${adminCorreo}`)
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Error ${res.status}: ${res.statusText}`);
+            }
+            return res.json();
+        })
         .then(data => {
-            const contenedor = document.getElementById("contenedor-solicitudes");
-            contenedor.innerHTML = "<h2>Solicitudes Pendientes</h2>";
+            contenedor.innerHTML = `<h2>Solicitudes Pendientes - Departamento: ${adminRol}</h2>`;
 
             const pendientes = data.filter(s => s.estado === "pendiente");
 
             if (pendientes.length === 0) {
-                contenedor.innerHTML += "<p>No hay solicitudes pendientes.</p>";
+                contenedor.innerHTML += `<p>No hay solicitudes pendientes para el departamento de ${adminRol}.</p>`;
                 return;
             }
 
@@ -68,7 +96,8 @@ function cargarSolicitudes() {
         })
         .catch(err => {
             console.error("❌ Error al cargar solicitudes:", err);
-            document.getElementById("contenedor-solicitudes").innerHTML += "<p>Error al cargar solicitudes.</p>";
+            contenedor.innerHTML = "<h2>Solicitudes Pendientes</h2>";
+            contenedor.innerHTML += `<p>Error al cargar solicitudes: ${err.message}</p>`;
         });
 }
 
@@ -77,5 +106,16 @@ document.addEventListener("DOMContentLoaded", () => {
         menuLink.addEventListener("click", toggleSubmenu);
     });
 
+    // Verificar si hay sesión de admin y cargar las solicitudes
+    const adminCorreo = localStorage.getItem('correo');
+    const adminRol = localStorage.getItem('rol');
+    
+    if (!adminCorreo || !adminRol) {
+        alert('No hay sesión activa o no tienes privilegios de administrador');
+        window.location.href = "../index.html";
+        return;
+    }
+    
+    // Si tiene los permisos, cargar las solicitudes
     cargarSolicitudes();
 });

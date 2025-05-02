@@ -27,6 +27,18 @@ function handleCredentialResponse(response) {
             .then(res => res.json())
             .then(data => {
                 if (data.registrado) {
+                    // Guardar el rol si existe
+                    if (data.rol) {
+                        localStorage.setItem("rol", data.rol);
+                        
+                        // Si tiene rol de admin, redirigir al panel correspondiente
+                        if (data.rol === 'biblioteca' || data.rol === 'bienestar' || data.rol === 'servicios generales') {
+                            alert("✅ Bienvenido administrador de " + data.rol);
+                            window.location.href = "http://127.0.0.1:5500/interfaz_administrador/index.html";  // Panel de admin
+                            return;
+                        }
+                    }
+                    
                     alert("✅ Bienvenido de nuevo: " + email);
                     window.location.href = "http://127.0.0.1:5500/interfaz_usuario/index.html";  // Página de usuario
                 } else {

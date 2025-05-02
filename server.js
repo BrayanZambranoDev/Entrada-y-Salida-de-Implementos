@@ -178,82 +178,134 @@ app.get("/registros", (req, res) => {
     });
 });
 
-
-
-
-// 1) POST /guardar-solicitud (reemplaza tu ruta actual)
+// GUARDAR SOLICITUD CON CATEGORÍA
 app.post("/guardar-solicitud", (req, res) => {
     const { items } = req.body;
-    if (!Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ mensaje: "No hay datos válidos en la solicitud" });
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ mensaje: "❌ No hay datos válidos en la solicitud" });
     }
-  
-    // 2) Por cada item, consulta la categoría de ese producto
-    const promesas = items.map(item => new Promise((resolve, reject) => {
-      conexion.query(
-        "SELECT categoria FROM implementos WHERE nombre = ?",
-        [item.nombre],
-        (err, rows) => {
-          if (err) return reject(err);
-          if (!rows.length) return reject(new Error(`Implemento "${item.nombre}" no existe`));
-          resolve([
-            item.usuario,
-            item.nombre,
-            item.cantidad,
-            item.comentario || "",
-            rows[0].categoria         // ← aquí obtienes “Biblioteca”, “Mercadeo”, etc.
-          ]);
-        }
-      );
-    }));
-  
-    // 3) Cuando todas las categorías estén listas, inserta en bloque
-    Promise.all(promesas)
-      .then(valores => {
-        // Ahora sí guardamos también la columna `categoria`
-        conexion.query(
-          `INSERT INTO solicitudes
-             (nombre_usuario, nombre_producto, cantidad, comentario, categoria)
-           VALUES ?`,
-          [valores],
-          (err, result) => {
-            if (err) {
-              console.error("Error al registrar solicitud:", err);
-              return res.status(500).json({ mensaje: "Error al registrar solicitud" });
+
+    // Procesamos los items para obtener sus categorías
+    const procesarItems = async () => {
+        try {
+            const itemsConCategoria = [];
+            
+            for (const item of items) {
+                // Consultar la categoría del producto en la tabla implementos
+                const [implemento] = await new Promise((resolve, reject) => {
+                    conexion.query(
+                        "SELECT categoria FROM implementos WHERE nombre = ?", 
+                        [item.nombre], 
+                        (err, result) => {
+                            if (err) reject(err);
+                            else resolve(result);
+                        }
+                    );
+                });
+                
+                // Usar la categoría del implemento
+                const categoria = implemento?.categoria || "general";
+                
+                itemsConCategoria.push([
+                    item.usuario,
+                    item.nombre,
+                    item.cantidad,
+                    item.comentario || '',
+                    categoria  // Añadimos la categoría
+                ]);
             }
-            res.json({
-              mensaje: `Solicitudes registradas (${result.affectedRows})`
+            
+            return itemsConCategoria;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    procesarItems()
+        .then(valores => {
+            const sql = `INSERT INTO solicitudes 
+                (nombre_usuario, nombre_producto, cantidad, comentario, categoria) 
+                VALUES ?`;
+
+            conexion.query(sql, [valores], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ mensaje: "❌ Error al registrar la solicitud" });
+                }
+
+                res.json({ mensaje: "✅ Solicitudes registradas exitosamente" });
             });
-          }
-        );
-      })
-      .catch(err => {
-        console.error("Error obteniendo categoría:", err);
-        res.status(400).json({ mensaje: err.message });
-      });
-  });
-  
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).json({ mensaje: "❌ Error al procesar la solicitud" });
+        });
+});
 
-// Obtener todas las solicitudes
-// Obtener todas las solicitudes, filtradas por rol (categoria)
-// Obtener todas las solicitudes
+// OBTENER SOLICITUDES FILTRADAS POR ROL
 app.get("/solicitudes", (req, res) => {
-    const sql = `
-      SELECT
-        s.id, s.nombre_usuario, s.nombre_producto, s.cantidad,
-        s.comentario, s.estado, s.fecha, s.fecha_entrega, s.categoria,
-        u.nombres, u.apellidos, u.documento, u.telefono
-      FROM solicitudes s
-      LEFT JOIN usuarios u ON s.nombre_usuario = u.correo
-      ORDER BY s.id DESC
-    `;
-    conexion.query(sql, (err, rows) => {
-      if (err) return res.status(500).json({ error: "Error al obtener solicitudes" });
-      res.json(rows);
+    // Obtenemos el correo del administrador desde la consulta
+    const adminCorreo = req.query.correo;
+    
+    // Si no se proporciona correo, devolver todas las solicitudes (comportamiento original)
+    if (!adminCorreo) {
+        const sql = `
+            SELECT 
+                s.id, s.nombre_usuario, s.nombre_producto, s.cantidad, s.comentario, 
+                s.estado, s.fecha, s.fecha_entrega, s.categoria,
+                u.nombres, u.apellidos, u.documento, u.telefono
+            FROM solicitudes s
+            LEFT JOIN usuarios u ON s.nombre_usuario = u.correo
+            ORDER BY s.id DESC
+        `;
+        
+        conexion.query(sql, (err, resultados) => {
+            if (err) {
+                console.error("Error al obtener solicitudes:", err);
+                return res.status(500).json({ error: "❌ Error al obtener las solicitudes" });
+            }
+            
+            res.json(resultados);
+        });
+        return;
+    }
+    
+    // Si se proporciona correo, filtrar por rol
+    conexion.query("SELECT rol FROM usuarios WHERE correo = ?", [adminCorreo], (error, resultadoRol) => {
+        if (error) {
+            console.error("Error al obtener rol:", error);
+            return res.status(500).json({ error: "❌ Error al obtener rol del administrador" });
+        }
+        
+        if (resultadoRol.length === 0) {
+            return res.status(404).json({ error: "❌ Administrador no encontrado" });
+        }
+        
+        const rolAdmin = resultadoRol[0].rol;
+        
+        // Consulta SQL con filtro por categoría
+        const sql = `
+            SELECT 
+                s.id, s.nombre_usuario, s.nombre_producto, s.cantidad, s.comentario, 
+                s.estado, s.fecha, s.fecha_entrega, s.categoria,
+                u.nombres, u.apellidos, u.documento, u.telefono
+            FROM solicitudes s
+            LEFT JOIN usuarios u ON s.nombre_usuario = u.correo
+            WHERE s.categoria = ?
+            ORDER BY s.id DESC
+        `;
+        
+        conexion.query(sql, [rolAdmin], (err, resultados) => {
+            if (err) {
+                console.error("Error al obtener solicitudes:", err);
+                return res.status(500).json({ error: "❌ Error al obtener las solicitudes" });
+            }
+            
+            res.json(resultados);
+        });
     });
-  });
-  
-
+});
 
 // Actualizar el estado de solicitudes por ID
 app.post("/actualizar-estado-solicitudes", (req, res) => {
@@ -279,7 +331,6 @@ app.post("/actualizar-estado-solicitudes", (req, res) => {
         res.json({ mensaje: "✅ Estado actualizado correctamente", actualizados: result.affectedRows });
     });
 });
-
 
 // Iniciar servidor
 const PORT = 3000;
