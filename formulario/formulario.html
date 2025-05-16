@@ -3,26 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Formulario de Registro</title>
-  <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
 </head>
 <body>
 
+  <!-- Este contenedor de mensaje queda fijo arriba de todo -->
+  <div id="mensaje" class="mensaje-fixed"></div>
+
   <section class="form-register">
     <h4>Formulario de Registro</h4>
-    <p id="mensaje" style="color: green; font-weight: bold;"></p>
-    
-    <form id="registroForm"> 
+    <form id="registroForm">
       <div class="input-group">
-        <input class="controls" type="text" name="nombres" id="nombres" placeholder="Ingrese su Nombre" required>
+        <input class="controls" type="text" id="nombres" name="nombres" placeholder="Ingrese su Nombre" required>
       </div>
       <div class="input-group">
-        <input class="controls" type="text" name="apellidos" id="apellidos" placeholder="Ingrese su Apellido" required>
+        <input class="controls" type="text" id="apellidos" name="apellidos" placeholder="Ingrese su Apellido" required>
       </div>
       <div class="input-group">
-        <select class="controls" name="tipo_documento" id="tipo_documento" required>
+        <select class="controls" id="tipo_documento" name="tipo_documento" required>
           <option value="" disabled selected>Seleccione tipo de documento</option>
           <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
           <option value="Cédula de Extranjería">Cédula de Extranjería</option>
@@ -30,64 +31,74 @@
         </select>
       </div>
       <div class="input-group">
-        <input class="controls" type="text" name="documento" id="documento" placeholder="Número de Documento" required>
+        <input class="controls" type="text" id="documento" name="documento" placeholder="Número de Documento" required>
       </div>
       <div class="input-group">
-        <input class="controls" type="tel" name="telefono" id="telefono" placeholder="Ingrese su Teléfono" required>
+        <input class="controls" type="tel" id="telefono" name="telefono" placeholder="Ingrese su Teléfono" required>
       </div>
-
-      <div class="terms">
-        <p>Estoy de acuerdo con <a href="#">Términos y Condiciones</a></p>
-      </div>
-
       <input class="botons" type="submit" value="Registrar">
     </form>
   </section>
 
+  <img src="logo-funlam.png" alt="Logo de la institución" class="logo">
+
   <script>
-    const correo = localStorage.getItem("correo")?.trim() || "";
+    (function() {
+      const correo = localStorage.getItem("correo")?.trim() || "";
+      const form = document.getElementById("registroForm");
+      const mensajeEl = document.getElementById("mensaje");
 
-    document.getElementById("registroForm").addEventListener("submit", function(event) {
-      event.preventDefault();
+      form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        mensajeEl.textContent = "";
+        mensajeEl.className = "mensaje-fixed";
 
-      const datos = {
-        nombres: document.getElementById("nombres").value.trim(),
-        apellidos: document.getElementById("apellidos").value.trim(),
-        tipo_documento: document.getElementById("tipo_documento").value,
-        documento: document.getElementById("documento").value.trim(),
-        telefono: document.getElementById("telefono").value.trim(),
-        correo: correo
-      };
+        const datos = {
+          nombres:        document.getElementById("nombres").value.trim(),
+          apellidos:      document.getElementById("apellidos").value.trim(),
+          tipo_documento: document.getElementById("tipo_documento").value,
+          documento:      document.getElementById("documento").value.trim(),
+          telefono:       document.getElementById("telefono").value.trim(),
+          correo
+        };
 
-      // Validación de campos
-      if (!datos.nombres || !datos.apellidos || !datos.tipo_documento || !datos.documento || !datos.telefono || !datos.correo) {
-        document.getElementById("mensaje").textContent = "❌ Todos los campos son obligatorios.";
-        return;
-      }
-
-      fetch("http://localhost:3000/registro", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(datos)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.mensaje) {
-          document.getElementById("mensaje").textContent = "✅ " + data.mensaje;
-          document.getElementById("registroForm").reset();
-          setTimeout(() => {
-            window.location.href = "http://127.0.0.1:5500/interfaz_usuario/index.html";
-          }, 2000);
-        } else {
-          document.getElementById("mensaje").textContent = "❌ Error en la respuesta del servidor.";
+        // Validación de campos
+        let valido = true;
+        for (const [key, val] of Object.entries(datos)) {
+          if (!val) {
+            valido = false;
+            mensajeEl.textContent = `❌ El campo "${key}" es obligatorio.`;
+            mensajeEl.classList.add("error");
+            break;
+          }
         }
-      })
-      .catch(error => {
-        console.error("❌ Error al registrar:", error);
-        document.getElementById("mensaje").textContent = "❌ Error al registrar los datos.";
-      });
-    });
-  </script>
+        if (!valido) return;
 
+        try {
+          const res = await fetch("http://localhost:3000/registro", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(datos)
+          });
+          const json = await res.json();
+          if (json.mensaje) {
+            mensajeEl.textContent = "✅ " + json.mensaje;
+            mensajeEl.classList.add("success");
+            form.reset();
+            setTimeout(() => {
+              window.location.href = "http://127.0.0.1:5500/interfaz_usuario/index.html";
+            }, 2000);
+          } else {
+            mensajeEl.textContent = "❌ Error en la respuesta del servidor.";
+            mensajeEl.classList.add("error");
+          }
+        } catch (err) {
+          mensajeEl.textContent = "❌ Error al conectar con el servidor.";
+          mensajeEl.classList.add("error");
+          console.error(err);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

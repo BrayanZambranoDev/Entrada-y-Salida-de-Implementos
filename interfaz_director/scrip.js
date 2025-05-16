@@ -1,60 +1,87 @@
+// scrip.js (Panel Director)
 
+// 1) Cerrar sesión y limpiar todo
 function cerrarSesion() {
-    // Redirigir a la página de inicio de sesión
-    window.location.href = "../index.html";
+  localStorage.removeItem("correo");
+  localStorage.removeItem("rol");
+  localStorage.removeItem("id_token");
+  window.location.href = "../index.html";
 }
 
-// Función para mostrar/ocultar submenús de forma independiente
-function toggleSubmenu(event) {
-    event.preventDefault(); // Evita el comportamiento predeterminado del enlace
-    var submenu = event.target.nextElementSibling;
-
-    if (submenu.classList.contains("show")) {
-        submenu.classList.remove("show");
-    } else {
-        // Ocultar cualquier otro submenú abierto
-        document.querySelectorAll(".submenu-content").forEach(function (el) {
-            el.classList.remove("show");
-        });
-        submenu.classList.add("show");
-    }
+// 2) Obtiene headers con el token
+function authHeaders() {
+  const token = localStorage.getItem("id_token");
+  return token
+    ? {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    : { "Content-Type": "application/json" };
 }
 
-// Agregar eventos a los enlaces de los submenús
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".submenu > a").forEach(function (menuLink) {
-        menuLink.addEventListener("click", toggleSubmenu);
+// 3) Cargar solicitudes pendientes
+async function cargarSolicitudesDirector() {
+  const cont = document.getElementById("director-list");
+  cont.innerHTML = "<p>Cargando…</p>";
+
+  try {
+    const res = await fetch("http://localhost:3000/solicitudes/director", {
+      headers: authHeaders()
     });
-});
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
 
-
-// Función para acceder a la solicitud y redirigir a la página de gestión
-function accederSolicitud(producto, usuario) {
-    // Aquí puedes redirigir a otra sección para gestionar la solicitud
-    alert("Accediendo a la solicitud de " + usuario );
-
-    // Aquí puedes agregar la lógica para redirigir a la página correspondiente
-    // Por ejemplo: window.location.href = 'pagina_de_gestion.html'; 
-    // Si usas una página externa para la gestión de solicitudes
-    window.location.href = 'en_espera_administrador/index.html?producto=' + producto + '&usuario=' + usuario;
-
-
-}
-
-// Función para mover la solicitud a "Aprobadas" o "Por Fuera" en el sidebar
-function moverSolicitud(submenu, producto, usuario) {
-    const subMenu = document.querySelector(submenu);
-    const nuevaSolicitud = document.createElement('a');
-    nuevaSolicitud.href = '#';
-    nuevaSolicitud.textContent = `${usuario} ha solicitado ${producto}`;
-
-    // Añadirlo al submenú de "Aprobadas" o "Por Fuera"
-    subMenu.appendChild(nuevaSolicitud);
-
-    // Mostrar el submenú si no está visible
-    if (!subMenu.classList.contains('show-aprobadas') && submenu === '.submenu-content.aprobadas') {
-        subMenu.classList.add('show-aprobadas');
-    } else if (!subMenu.classList.contains('show-porfuera') && submenu === '.submenu-content.porfuera') {
-        subMenu.classList.add('show-porfuera');
+    cont.innerHTML = "";
+    if (!data.length) {
+      cont.innerHTML = "<p>No hay solicitudes por aprobar.</p>";
+      return;
     }
+
+    data.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "card mb-3";
+      card.innerHTML = `
+        <div class="card-header">
+          Grupo #${item.grupo_id} — 
+          <small>${new Date(item.fecha_pedido).toLocaleString()}</small>
+        </div>
+        <div class="card-body">
+          <p><strong>Producto:</strong> ${item.producto} (${item.cantidad})</p>
+          <p><strong>Comentario:</strong> ${item.comentario || '—'}</p>
+          <p><strong>Usuario:</strong> ${item.solicitante}</p>
+          <button class="btn btn-success" onclick="decidirSolicitud(${item.id}, 'aprobado')">
+            Aprobar
+          </button>
+          <button class="btn btn--danger" onclick="decidirSolicitud(${item.id}, 'rechazado')">
+            Rechazar
+          </button>
+        </div>
+      `;
+      cont.appendChild(card);
+    });
+  } catch (err) {
+    console.error("Error al cargar solicitudes:", err);
+    cont.innerHTML = "<p>Error al cargar solicitudes.</p>";
+  }
 }
+
+// 4) Aprobar o rechazar una solicitud
+async function decidirSolicitud(itemId, decision) {
+  try {
+    const res = await fetch(`http://localhost:3000/solicitudes/${itemId}/decidir`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({ decision })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || data.mensaje || `HTTP ${res.status}`);
+    alert("✅ " + data.mensaje);
+    cargarSolicitudesDirector();
+  } catch (err) {
+    console.error("Error al decidir solicitud:", err);
+    alert("❌ " + err.message);
+  }
+}
+
+// 5) Inicialización al cargar la página
+document.addEventListener("DOMContentLoaded", cargarSolicitudesDirector);

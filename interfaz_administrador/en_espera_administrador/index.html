@@ -10,56 +10,42 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet">
 
-  <!-- CSS -->
+  <!-- Bootstrap (necesario para las tarjetas y botones) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  <!-- FontAwesome (iconos bonitos, opcional pero recomendado) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- CSS de tu proyecto -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
   <header>
     <div class="container">
-      <button class="menu-toggle" onclick="toggleMenu()">
-        <span></span>
-      </button>
-      
       <h1 class="logo">Préstamo de Implementos</h1>
       <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
   </header>
 
   <div class="main-container">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
+    <nav class="sidebar">
       <h3>Menú</h3>
+      <ul>
+        <li><a href="../base.html">Agregar o Quitar Implementos</a></li>
+        <li><a href="../en_espera_administrador/index.html" class="active">En Espera</a></li>
+        <li><a href="../entregadas_administrador/index.html">Entregadas</a></li>
+        <li><a href="../devoluciones_administrador/index.html">Devoluciones</a></li>
+        <li><a href="../../index.html">Salir</a></li>
+      </ul>
+    </nav>
 
-      <div class="submenu">
-        <a href="#" onclick="toggleSubmenu(event)">Implementos ▼</a>
-        <div class="submenu-content">
-          <a href="../interfaz_administrador/base.html">Agregar o quitar Implementos</a>
-        </div>
-      </div>
-
-      <div class="submenu">
-        <a href="#" onclick="toggleSubmenu(event)">Solicitudes ▼</a>
-        <div class="submenu-content">
-          <a href="index.html">En espera</a>
-          <a href="../entregadas_administrador/index.html">Entregadas</a>
-        </div>
-      </div>
-
-      <a href="../index.html" class="home-link">Ir a la página principal</a>
-    </div>
-
-    <!-- Contenedor dinámico de solicitudes -->
-    <main class="container">
-      <section class="pending-requests" id="contenedor-solicitud">
-        <h1 class="category-title" id="titulo-solicitud">Solicitudes Pendientes</h1>
-        <div id="items-solicitados">
-          <p>Cargando datos...</p>
-        </div>
-      </section>
+    <main class="content">
+      <h2 id="titulo-solicitud">Solicitudes en Espera</h2>
+      <div id="items-solicitados"></div>
     </main>
   </div>
 
+  <!-- Script propio de la página -->
   <script src="scrip.js"></script>
 </body>
 </html>

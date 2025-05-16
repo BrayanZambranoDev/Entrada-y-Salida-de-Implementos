@@ -1,63 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Salidas - Celador</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Celador – Control de Salida/Retorno</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet"/>
+
+  <!-- CSS global -->
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1 class="logo">Control de Salidas - Celador</h1>
-            <div class="header-buttons">
-                <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
-            </div>
-        </div>
-    </header>
+  <header>
+    <div class="container">
+      <h1 class="logo">Celador – Control</h1>
+      <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+  </header>
 
-    <main>
-        <div class="container">
-            <h2 style="text-align:center; margin-top: 20px;">Solicitudes Aprobadas</h2>
+  <div class="main-container">
+    <nav class="sidebar">
+      <h3>Menú</h3>
+      <a href="../index.html" class="home-link">Inicio</a>
+    </nav>
+    <main class="container">
+      <h2 class="category-title">Pendientes de Salida</h2>
+      <div id="pendientes-salida"><p>Cargando…</p></div>
 
-            <section class="approved-requests">
-                <!-- Ejemplo de solicitud -->
-                <div class="request-item">
-                    <div>
-                        <p><span>Solicitante:</span> Juan Pérez</p>
-                        <p><strong>Artículo:</strong> Proyector</p>
-                        <p><strong>Artículo:</strong> Mouse</p>
-                        <p><strong>Artículo:</strong> mantel</p>
-                        <p><strong>Hora:</strong> 10:00 AM</p>
-                        <p><strong>Estado:</strong> <span class="estado-texto">Pendiente de salida</span></p>
-                    </div>
-                    <div class="request-actions">
-                        <button class="approve-button" onclick="darSalida(this)">Dar salida</button>
-                        <button class="access-button" onclick="registrarIngreso(this)" disabled>Registrar ingreso</button>
-                    </div>
-                </div>
-
-                <div class="request-item">
-                    <div>
-                        <p><span>Solicitante:</span> maria lopez</p>
-                        <p><strong>Artículo:</strong> Mouse</p>
-                        <p><strong>Artículo:</strong> portatil</p>
-                        <p><strong>Artículo:</strong> sillas</p>
-                        <p><strong>Hora:</strong> 10:00 AM</p>
-                        <p><strong>Estado:</strong> <span class="estado-texto">Pendiente de salida</span></p>
-                    </div>
-                    <div class="request-actions">
-                        <button class="approve-button" onclick="darSalida(this)">Dar salida</button>
-                        <button class="access-button" onclick="registrarIngreso(this)" disabled>Registrar ingreso</button>
-                    </div>
-                </div>
-
-                <!-- Puedes duplicar este bloque para más solicitudes -->
-            </section>
-        </div>
+      <h2 class="category-title" style="margin-top:2rem;">Pendientes de Retorno</h2>
+      <div id="pendientes-retorno"><p>Cargando…</p></div>
     </main>
+  </div>
 
-    <script src="scrip.js"></script>
-
+  <script src="scrip.js"></script>
 </body>
 </html>

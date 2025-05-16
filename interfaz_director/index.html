@@ -1,73 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Préstamo de Implementos</title>
-    
-    <!-- Conexión a Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet">
-
-    <!-- Estilos CSS -->
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Panel Director</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-
-    <header>
-        <div class="container">
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-            <h1 class="logo">Préstamo de Implementos</h1>
-            <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
-        </div>
-    </header>
-
-    <!-- Contenedor principal -->
-    <div class="main-container">
-        <!-- Barra lateral -->
-        <div class="sidebar" id="sidebar">
-            <h3 class=>Menú</h3>
-
-             <!-- solicitudes con Submenú -->
-             <div class="submenu">
-                <a href="#" onclick="toggleSubmenu()">Solicitudes ▼</a>
-                <div class="submenu-content" id="submenu">
-                    <a href="en_espera/index.html">en espera</a>
-                    <a href="aprobadas/index.html">aprobadas</a>
-                    <a href="por_fuera/index.html">por fuera</a>
-                </div>
-            </div>
-            
-        </div>
-
-        <!-- recuadro para ver las solicitudes que realizen los usuarios -->
-        <aside class="pending-requests">
-            <h2>Solicitudes Pendientes</h2>
-        
-            <!-- Solicitud de ejemplo -->
-            <div class="request-item">
-                <span class="user-name">Juan Pérez</span> ha hecho una solicitud</strong>
-                <div class="request-actions">
-                    <a href="en_espera/index.html" class="access-button" onclick="accederSolicitud('Teclado', 'Juan Pérez')">verificar</a>
-                </div>
-            </div>
-        
-            <!-- Solicitud de ejemplo -->
-            <div class="request-item">
-                <span class="user-name">María López</span> ha hecho una solicitud</strong>
-                <div class="request-actions">
-                    <a href="en_espera/index.html" class="access-button" onclick="accederSolicitud('Mouse', 'María López')">verificar</a>
-                </div>
-            </div>
-        
-            <!-- Más solicitudes pueden agregarse aquí -->
-        </aside>
-        
-        
+  <header>
+    <div class="container">
+      <h1 class="logo">Aprobaciones - Director</h1>
+      <button class="logout-button" onclick="cerrarSesion()">Salir</button>
     </div>
+  </header>
 
-    <script src="scrip.js"></script>
+  <div class="main-container">
+    <nav class="sidebar">
+      <h3>Menú</h3>
+      <a href="../index.html" class="home-link">Inicio</a>
+    </nav>
 
+    <main class="container">
+      <h2 class="category-title">Solicitudes Pendientes</h2>
+      <div id="director-list">
+        <p>Cargando…</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="scrip.js"></script>
 </body>
 </html>

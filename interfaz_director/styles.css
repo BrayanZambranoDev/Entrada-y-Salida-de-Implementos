@@ -1,401 +1,185 @@
-/* Fuente personalizada */
-.fleur-de-leah-regular {
-  font-family: "Fleur De Leah", serif;
-  font-weight: 400;
-  font-style: normal;
+/* styles.css (aplicable también al Panel Director) */
+
+/* ===== Google Fonts ===== */
+@import url('https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap');
+
+/* ===== Global ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
 }
 
-/* Encabezado */
+/* ===== Header ===== */
 header {
-  background-color: #d97a40;
-  color: white;
-  padding: 15px 20px;
-  text-align: center;
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
-  z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombras suaves para el header */
-  animation: fadeIn 1s ease-out;
+  height: 60px;
+  background-color: #d97a40;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 100;
 }
-
 header .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
+  max-width: 1200px;
   margin: 0 auto;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil en el logo */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
 }
-
+.logo {
+  font-family: 'Fleur De Leah', serif;
+  font-size: 1.5rem;
+  margin: 0;
+}
 .logout-button {
   background-color: #d9534f;
-  color: white;
-  padding: 10px 15px;
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  padding: 8px 12px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
-  position: absolute;
-  right: 40px;
-  transition: transform 0.3s ease;
+  transition: background-color 0.3s ease;
 }
-
 .logout-button:hover {
-  transform: translateX(10px);
+  background-color: #c9302c;
 }
 
-/* Botón de menú */
-.menu-toggle {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  position: absolute;
-  left: 20px;
-  transition: transform 0.3s ease;
-}
-
-.menu-toggle:hover {
-  transform: rotate(90deg); /* Animación sutil al pasar el mouse */
-}
-
-/* Contenedor principal */
+/* ===== Main Layout ===== */
 .main-container {
   display: flex;
-  flex: 1;
-  margin-top: 70px;
-  animation: slideIn 0.5s ease-out;
+  margin-top: 60px; /* altura del header */
+  min-height: calc(100vh - 60px);
 }
 
-/* Barra lateral */
+/* ===== Sidebar ===== */
 .sidebar {
-  background-color: #d97a40;
-  color: white;
   width: 250px;
+  background-color: #d97a40;
+  color: #fff;
   padding: 20px;
-  height: 100vh;
-  transition: transform 0.3s ease;
-  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* Sombra para la barra lateral */
-  animation: slideLeft 0.5s ease-out;
 }
-
 .sidebar h3 {
+  margin-top: 0;
+  font-size: 1.25rem;
   text-align: center;
-  font-size: 22px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
 }
-
-.sidebar a {
+.sidebar a,
+.sidebar .home-link {
   display: block;
-  padding: 12px;
-  margin-bottom: 12px;
-  font-size: 18px;
+  color: #fff;
   text-decoration: none;
-  color: white;
-  border-radius: 5px;
-  transition: background-color 0.3s, padding-left 0.3s;
-  transform: scale(1);
-  transition: all 0.3s ease;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  transition: background-color 0.3s ease;
+}
+.sidebar a:hover,
+.sidebar .home-link:hover {
+  background-color: #c06636;
 }
 
-.sidebar a:hover {
-  background-color: #007b99;
-  padding-left: 20px;
-  transform: scale(1.05); /* Efecto de crecimiento sutil */
-}
-
-/* Submenú de Implementos */
-.submenu a {
-  font-weight: bold;
-}
-
-.submenu-content {
-  display: none;
-  padding-left: 20px;
-}
-
-.submenu-content a {
-  font-size: 16px;
-  padding: 10px;
-  color: white;
-  background-color: transparent;
-  text-decoration: none;
-  border-radius: 5px;
-  margin-bottom: 5px;
-  display: block;
-  transition: background-color 0.3s ease, padding-left 0.3s;
-}
-
-.submenu-content a:hover {
-  background-color: #007b99;
-  padding-left: 20px;
-  color: white;
-}
-
-.show {
-  display: block !important;
-}
-
-/* Contenido principal */
-main {
-  padding: 20px;
-  flex-grow: 1;
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  justify-content: center;
-  animation: fadeInMain 1s ease-out;
-}
-
-/* Centrar el contenedor de categorías */
-.category-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  justify-content: center;
-  max-width: 900px;
+/* ===== Main Content ===== */
+main.container {
+  flex: 1;
+  max-width: 800px;
   margin: 0 auto;
-  animation: gridPop 1s ease-out;
-}
-
-/* Categoría */
-.category {
-  background-color: #fff;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.category-title {
+  font-size: 1.75rem;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: fadeInCategory 0.7s ease-out;
+  margin-bottom: 1.5rem;
 }
 
-.category:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Efecto de sombra más intenso */
-}
-
-/* Imágenes */
-.category img {
-  width: 70%;
-  height: auto;
-  object-fit: cover;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
-}
-
-.category img:hover {
-  transform: scale(1.1); /* Efecto de zoom suave */
-}
-
-/* Nuevo recuadro de solicitudes aprobadas */
-.approved-requests {
+/* ===== Cards ===== */
+.card {
   background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-left: 20px;
-  text-align: center;
-  height: fit-content;
-  animation: fadeInBox 0.7s ease-out;
-}
-
-.approved-requests h2 {
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 15px;
-}
-
-/* Nuevo recuadro de solicitudes pendientes */
-.pending-requests {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-left: 20px;
-  text-align: left;
-  height: fit-content;
-  max-height: 500px;
-  overflow-y: auto; /* Permite desplazamiento si hay muchas solicitudes */
-  animation: fadeInBox 0.7s ease-out;
-}
-
-.pending-requests h2 {
-  font-size: 18px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 20px;
-}
-
-/* Estilo para cada solicitud */
-.request-item {
-  background-color: #f9f9f9;
-  padding: 15px;
   border-radius: 8px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: transform 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  animation: fadeInBox 0.5s ease-out;
 }
-
-.request-item:hover {
-  transform: scale(1.02); /* Efecto de crecimiento al pasar el mouse */
-}
-
-.request-item span {
-  font-weight: bold;
-}
-
-.request-item strong {
-  color: #007b99;
-}
-
-/* Estilo para el enlace de "Acceder" */
-.request-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.access-button {
-  padding: 8px 15px;
-  font-size: 14px;
-  text-decoration: none;
-  background-color: #007b99;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-/* Estilo para los botones de Aprobar */
-.request-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.approve-button {
-  padding: 8px 15px;
-  font-size: 14px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  background-color: #28a745; /* Verde para aprobar */
-  color: white;
-}
-
-.approve-button:hover {
-  background-color: #218838; /* Verde oscuro al pasar el cursor */
-}
-
-/* Submenú en el sidebar para las solicitudes aprobadas */
-.submenu-content.aprobadas {
-  display: none;
-  padding-left: 20px;
-}
-
-.submenu-content.aprobadas a {
-  font-size: 16px;
-  padding: 8px;
+.card-header {
   background-color: #f1f1f1;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  padding: 10px 15px;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+}
+.card-body {
+  padding: 15px;
+}
+.card-body p {
+  margin: 0.5rem 0;
+}
+.card-body small {
+  color: #666;
+  font-size: 0.875rem;
+}
+.card-body .mt-3 {
+  margin-top: 1rem;
 }
 
-.submenu-content.aprobadas a:hover {
-  background-color: #007b99;
-  color: white;
+/* ===== Lists ===== */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+ul li {
+  margin-bottom: 0.5rem;
 }
 
-/* Mostrar las solicitudes aprobadas en el sidebar */
-.show-aprobadas {
-  display: block !important;
+/* ===== Buttons ===== */
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none;
+}
+.btn-success {
+  background-color: #28a745;
+  color: #fff;
+}
+.btn-success:hover {
+  background-color: #218838;
+}
+.btn--outline {
+  background: transparent;
+  border: 1px solid currentColor;
+  color: inherit;
+}
+.btn--outline:hover {
+  background: rgba(255,255,255,0.1);
+}
+.btn--danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+.btn--danger:hover {
+  background-color: #c82333;
 }
 
-/* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+/* ===== Utility Classes ===== */
+.mb-3 { margin-bottom: 1rem; }
+.mt-3 { margin-top: 1rem; }
 
-@keyframes fadeInMain {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideLeft {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeInCategory {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* ===== Animations ===== */
 @keyframes fadeInBox {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes gridPop {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.97) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }

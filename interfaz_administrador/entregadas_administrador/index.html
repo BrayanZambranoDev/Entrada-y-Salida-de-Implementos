@@ -10,57 +10,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Ephesis&family=Fleur+De+Leah&display=swap" rel="stylesheet" />
 
-  <!-- CSS -->
+  <!-- CSS global -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
   <header>
     <div class="container">
-      <button class="menu-toggle" onclick="toggleMenu()">
-        <span></span>
-      </button>
-      
-      <h1 class="logo">Préstamo de Implementos</h1>
+      <h1 class="logo">Historial de Entregas</h1>
       <button class="logout-button" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
   </header>
 
   <div class="main-container">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
+    <nav class="sidebar">
       <h3>Menú</h3>
+      <ul>
+        <li><a href="../base.html">Agregar o Quitar Implementos</a></li>
+        <li><a href="../en_espera_administrador/index.html">En Espera</a></li>
+        <li><a href="index.html" class="active-link">Entregadas</a></li>
+        <li><a href="../devoluciones_administrador/index.html">Devoluciones</a></li>
+        <li><a href="../../index.html">Salir</a></li>
+      </ul>
+    </nav>
 
-      <div class="submenu">
-        <a href="#" onclick="toggleSubmenu(event)">Implementos ▼</a>
-        <div class="submenu-content">
-          <a href="http://127.0.0.1:5500/interfaz_administrador/base.html">Agregar o quitar Implementos</a>
-        </div>
-      </div>
-
-      <div class="submenu">
-        <a href="#" onclick="toggleSubmenu(event)">Solicitudes ▼</a>
-        <div class="submenu-content">
-          <a href="../en_espera_administrador/index.html">En espera</a>
-          <a href="#">Entregadas</a>
-        </div>
-      </div>
-
-      <a href="../index.html" class="home-link">Ir a la página principal</a>
-    </div>
-
-    <!-- Contenedor dinámico de entregas -->
-    <main>
-      <div class="container">
-        <section class="pending-requests" id="contenedor-entregados">
-          <h1 class="category-title">Historial de Entregas</h1>
-          <p>Cargando solicitudes entregadas...</p>
-        </section>
+    <main class="content">
+      <h2 class="category-title">Historial de Entregas</h2>
+      <div id="contenedor-entregados">
+        <p class="loading-message">Cargando solicitudes entregadas…</p>
       </div>
     </main>
   </div>
 
-  <!-- Script -->
   <script src="scrip.js"></script>
 </body>
 </html>
