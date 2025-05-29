@@ -7,7 +7,7 @@ Proyecto Full-Stack desarrollado por Brayan Santiago Zambrano Guzmán
 
 ## Descripción
 
-Este proyecto es una aplicación web full-stack diseñada para gestionar de forma integral la entrada y salida de implementos en una institución educativa. Permite a distintos roles (Administrador, Director, Celador y Usuario) interactuar con el sistema según sus permisos, garantizando trazabilidad, validación de stock y seguridad básica.
+Este proyecto es una aplicación web full-stack diseñada para gestionar de forma integral la entrada y salida de implementos en una institución universitaria. Permite a distintos roles (Administrador, Director, Celador y Usuario) interactuar con el sistema según sus permisos, garantizando trazabilidad, validación de stock y seguridad básica.
 
 ---
 
