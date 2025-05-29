@@ -271,14 +271,15 @@ main {
 }
 
 .category img {
-  width: 60%;
-  height: auto;
-  max-height: 150px;
-  object-fit: contain;
+  display: block;
+  width: 100%;          /* ocupa todo el ancho de la tarjeta */
+  height: 330px;        /* fija una altura mayor */
+  object-fit: cover;    /* recorta/centrado para cubrir todo el espacio */
   margin-bottom: 15px;
   transition: var(--transition-normal);
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
+
 
 .category:hover img {
   transform: scale(1.1) rotate(2deg);
@@ -288,7 +289,7 @@ main {
 .category-title {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--header-blue);
   margin: 15px 0;
   transition: var(--transition-fast);
 }
@@ -614,3 +615,97 @@ main {
     min-width: 120px;
   }
 }
+/* Añade estas variables a tu :root si no las tienes */
+:root {
+  --requests-color: #6c757d;       /* Color base gris azulado */
+  --requests-hover: #5a6268;       /* Color hover más oscuro */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --transition-fast: all 0.2s ease;
+}
+
+/* Estilos completos para el botón Mis Solicitudes */
+.btn-requests {
+  /* Estructura y disposición */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  
+  /* Dimensiones y espaciado */
+  padding: 10px 18px;
+  min-width: 120px;
+  
+  /* Tipografía */
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+  
+  /* Apariencia */
+  color: white;
+  background-color: var(--requests-color);
+  border: none;
+  border-radius: 8px;
+  
+  /* Efectos visuales */
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  
+  /* Efecto de profundidad 3D */
+  perspective: 1000px;
+}
+
+/* Efecto de iluminación superior */
+.btn-requests::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
+  transform: translateZ(20px);
+  transition: var(--transition-fast);
+}
+
+/* Estados interactivos */
+.btn-requests:hover {
+  transform: translateY(-2px) translateZ(10px);
+  box-shadow: var(--shadow-md);
+  background-color: var(--requests-hover);
+}
+
+.btn-requests:active {
+  transform: translateY(1px) translateZ(5px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-requests:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(108, 117, 125, 0.4);
+}
+
+/* Versión alternativa con icono (opcional) */
+.btn-requests.with-icon::after {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: var(--transition-fast);
+}
+
+.btn-requests.with-icon:hover::after {
+  transform: scale(1.1);
+
+}
+

@@ -254,3 +254,15 @@ footer p a {
 footer p a:hover {
     color: var(--color-primary);
 }
+#carouselExampleIndicators {
+    max-width: 333px; /* Ajusta este valor según necesites */
+    margin: 1px auto; /* Centra el carrusel */
+}
+/* Solución 1: Mover las flechas fuera de la imagen */
+.carousel-control-prev {
+    left: -250px;/* Mueve la flecha izquierda hacia afuera */
+}
+
+.carousel-control-next {
+    right: -250px; /* Mueve la flecha derecha hacia afuera */
+}
