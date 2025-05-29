@@ -38,10 +38,10 @@ Este proyecto es una aplicación web full-stack diseñada para gestionar de form
 
 ## Tecnologías Utilizadas
 
-* Backend: Node.js, Express, Multer, JSON (persistencia académica)
-* Frontend: HTML5, CSS3 (Bootstrap), JavaScript
-* Entorno de Desarrollo: Visual Studio Code, npm
-* Control de Versiones: Git, GitHub
+* **Backend:** Node.js · Express · dotenv · cors · mysql · multer · nodemailer · google-auth-library · fs · path · JSON (persistencia académica)
+* **Frontend:** HTML5 · CSS3 (Bootstrap) · JavaScript
+* **Entorno de Desarrollo:** Visual Studio Code · npm
+* **Control de Versiones:** Git · GitHub
 
 ---
 
@@ -112,9 +112,4 @@ Correo: [brayansantiagozambranoguzman@gmail.com](mailto:brayansantiagozambranogu
 Este proyecto está bajo la licencia MIT.
 © 2025 Brayan Santiago Zambrano Guzmán
 
-
-## Licencia
-
-Este proyecto está bajo la licencia MIT.
-© 2025 Brayan Santiago Zambrano Guzmán
 
