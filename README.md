@@ -7,7 +7,7 @@ Proyecto Full-Stack desarrollado por Brayan Santiago Zambrano Guzmán
 
 ## Descripción
 
-Este proyecto es una aplicación web full-stack diseñada para gestionar de forma integral la entrada y salida de implementos en una institución universitaria. Permite a distintos roles (Administrador, Director, Celador y Usuario) interactuar con el sistema según sus permisos, garantizando trazabilidad, validación de stock y seguridad básica.
+Este proyecto es una aplicación web full-stack diseñada para gestionar de forma integral la entrada y salida de implementos en una institución educativa. Permite a distintos roles (Administrador, Director, Celador y Usuario) interactuar con el sistema según sus permisos, garantizando trazabilidad, validación de stock y seguridad básica.
 
 ---
 
@@ -49,16 +49,27 @@ Este proyecto es una aplicación web full-stack diseñada para gestionar de form
 
 ```
 Entrada-y-Salida-de-Implementos/
-├── bootstrap/               # Archivos CSS y componentes UI
-├── interfaz_administrador/  # Vistas y scripts del rol Administrador
-├── interfaz_director/       # Vistas y scripts del rol Director
-├── interfaz_celador/        # Vistas y scripts del rol Celador
-├── interfaz_usuario/        # Vistas y scripts del rol Usuario
-├── uploads/                 # Archivos cargados por usuarios
-├── .env                     # Variables de entorno (no incluido en el repo)
-├── server.js                # Punto de entrada del backend
-├── scrip.js                 # Lógica JavaScript compartida
-└── package.json             # Dependencias y scripts de npm
+├── bootstrap/                # Estilos y componentes de Bootstrap
+├── formulario/               # Formularios HTML independientes
+├── interfaz_administrador/   # Vistas y scripts para Administrador
+├── interfaz_celador/         # Vistas y scripts para Celador
+├── interfaz_director/        # Vistas y scripts para Director
+├── interfaz_usuario/         # Vistas y scripts para Usuario
+├── static/                   # Archivos estáticos adicionales (CSS, JS, imágenes)
+├── uploads/                  # Archivos cargados por los usuarios
+├── node_modules/             # Dependencias de npm
+├── .env                      # Variables de entorno (no versionado)
+├── .gitignore                # Archivos y carpetas ignorados por Git
+├── !DOCTYPE html.txt         # Ejemplo de encabezado HTML guardado como texto
+├── hola.html                 # Página de prueba estática
+├── index.html                # Página de inicio de la aplicación
+├── package.json              # Dependencias y scripts de npm
+├── package-lock.json         # Versionado de dependencias exactas
+├── server.js                 # Servidor backend con Express
+├── scrip.js                  # Lógica compartida de JavaScript en frontend
+├── style.css                 # Estilos globales personalizados
+├── scrum.txt                 # Documento de planificación Scrum
+└── pruebas.txt               # Notas y resultados de pruebas
 ```
 
 ---
@@ -95,6 +106,12 @@ Brayan Santiago Zambrano Guzmán
 Correo: [brayansantiagozambranoguzman@gmail.com](mailto:brayansantiagozambranoguzman@gmail.com)
 
 ---
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT.
+© 2025 Brayan Santiago Zambrano Guzmán
+
 
 ## Licencia
 
